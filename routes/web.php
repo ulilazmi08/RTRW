@@ -12,6 +12,7 @@ use App\Http\Controllers\SettingRtController;
 use App\Http\Controllers\StatistikController;
 use App\Http\Controllers\SettingRoleController;
 use App\Http\Controllers\IuranController;
+use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\KepalaKeluargaController;
 // use App\Http\Controllers\SettingRoleRtController;
 use App\Http\Controllers\UpdatePasswordController;
@@ -25,6 +26,7 @@ use App\Http\Controllers\LaporanPemasukanRtController;
 use App\Http\Controllers\LaporanPengeluaranRtController;
 use App\Http\Controllers\LaporanPengeluaranController;
 use App\Http\Controllers\SuratController;
+
 
 
 
@@ -72,10 +74,16 @@ Route::get('/editprofil', [ProfilController::class, 'editprofil']);
 Route::post('/profilktp', [ProfilController::class, 'uploadgambar']);
 Route::post('/profilkk', [ProfilController::class, 'uploadkk']);
 Route::get('/editprofil/{id}', [ProfilController::class, 'updateprofiluser']);
+Route::get('/updatewarga/{id}', [ProfilController::class, 'updateprofilwarga']);
 Route::get('/showprofil/{id}', [ProfilController::class, 'show']);
+Route::get('/profilwarga/{id}', [ProfilController::class, 'profilwarga']);
+Route::get('/editprofilwarga/{id}', [ProfilController::class, 'editprofilwarga']);
 Route::post('/simpankeluarga', [AnggotaKeluargaController::class, 'simpankeluarga']);
 Route::delete('/deleteanggota/{id}', [AnggotaKeluargaController::class, 'destroy']);
 Route::post('/editprofil/{id}', [ProfilController::class, 'updateprofiluser']);
+Route::post('/updatewarga/{id}', [ProfilController::class, 'updateprofilwarga']);
+
+
 
 Route::resource('/setting-rt', RtController::class);
 Route::get('/setting-ketuarw', [SettingRoleController::class, 'index']);
@@ -106,6 +114,7 @@ Route::delete('/lihatsurat/{id}', [SuratController::class, 'destroy']);
 Route::get('/cetaksurat/{id}', [SuratController::class, 'exportpdf']);
 Route::get('/terbitkansurat/{id}', [SuratController::class, 'terbitsurat']);
 Route::post('/terbitkansurat/{id}', [SuratController::class, 'terbitsurat']);
+Route::get('/carisurat',[SuratController::class, 'searchsurat']);
 Route::get('/carisuratapproved',[SuratController::class, 'search']);
 
 
@@ -115,10 +124,18 @@ Route::get('/daftarwargaadmin', [DaftarWargaController::class, 'admins']);
 //Bendahara
 Route::get('/updatebendahara/{id}', [DaftarWargaController::class, 'updatebendahara']);
 Route::post('/updatebendahara/{id}', [DaftarWargaController::class, 'updatebendahara']);
+Route::get('/updatebendahararw/{id}', [DaftarWargaController::class, 'updatebendahararw']);
+Route::post('/updatebendahararw/{id}', [DaftarWargaController::class, 'updatebendahararw']);
 //Sekretaris
 Route::get('/updatesekretaris/{id}', [DaftarWargaController::class, 'updatesekretaris']);
 Route::post('/updatesekretaris/{id}', [DaftarWargaController::class, 'updatesekretaris']);
+Route::get('/updatesekretarisrw/{id}', [DaftarWargaController::class, 'updatesekretarisrw']);
+Route::post('/updatesekretarisrw/{id}', [DaftarWargaController::class, 'updatesekretarisrw']);
 Route::get('/jadikanwarga/{id}', [DaftarWargaController::class, 'reset']);
+Route::get('/jadikanwargarw/{id}', [DaftarWargaController::class, 'resetwargarw']);
+Route::delete('/deletewarga/{id}', [DaftarWargaController::class, 'destroy']);
+Route::delete('/deletewargarw/{id}', [DaftarWargaController::class, 'destroyasrw']);
+
 
 // AUTH ROUTE
 Route::get('/login', [LoginController::class, 'index']);
@@ -153,4 +170,16 @@ Route::get('/export-pengeluaran',[LaporanPengeluaranController::class,'exportPen
 Route::get('/export-pengeluaran-pdf',[LaporanPengeluaranController::class,'exportPengeluaranPDF'])->name('export-pengeluaran-pdf');
 Route::post('/simpan_pengeluaran_rw', [LaporanPengeluaranController::class, 'pengeluaran']);
 
+Route::get('forget-password', [ForgotPasswordController::class, 'showForgetPasswordForm']);
+Route::post('forget-password-post', [ForgotPasswordController::class, 'submitForgetPasswordForm']); 
+Route::get('reset-password/{token}', [ForgotPasswordController::class, 'showResetPasswordForm'])->name('reset.password.get');
+Route::get('reset-password/{token}', [ForgotPasswordController::class, 'showResetPasswordForm'])->name('reset.password.get');
+// Route::get('/home/markNotifications', [HomeController::class, 'markNotification'])->name('user.markNotification');
+Route::post('/mark-as-read', [HomeController::class, 'markNotification'])->name('markNotification');
+
+Route::get('/carilaporan',[LaporanKeuanganRWController::class, 'carilaporan']);
+Route::get('/cariwarga',[DaftarWargaController::class, 'cariwarga']);
+
+Route::get('/carilaporanrt',[LaporanKeuanganRTController::class, 'carilaporanrt']);
+Route::post('reset-password-submit', [ForgotPasswordController::class, 'submitResetPasswordForm']);
 

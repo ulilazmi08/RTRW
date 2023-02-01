@@ -14,7 +14,8 @@ use Illuminate\Support\Facades\DB;
 class LaporanPengeluaranController extends Controller
 {
     public function index()
-    {
+    {       
+        $role = Auth::user()->role;
         $pengeluaran = DB::table('keuangan')->where('jenis', "Pengeluaran")->paginate(10);
         $nominal = DB::table('keuangan')->where('jenis', "Pengeluaran")->pluck('nominal');
         $sumnominal = 0;
@@ -26,6 +27,9 @@ class LaporanPengeluaranController extends Controller
         $username = Auth::user()->name;
         $userid = Auth::user()->id;
         $profil = DB::table('profil')->where('user_id', $userid)->pluck('rt_id')->first();  
+        if ($role != "2"  && $role != "7") {
+            abort(403);
+        }
         return view('pengeluaranrw.index',[
             'tittle' => 'Dashboard | Laporan Pengeluaran RW',
             'namauser' => $username,

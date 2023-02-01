@@ -39,8 +39,16 @@
                 <div class="mb-3">
                   <label for="status" class="form-label">Status Pernikahan</label>
                   <select id="status" class="form-select" name="status">
-                      <option value="Belum Menikah" >Belum Menikah</option>
+                      <option value="Tidak Menikah" >Tidak Menikah</option>
                       <option value="Sudah Menikah"selected>Sudah Menikah</option>
+                  </select>
+                </div>
+
+                <div class="mb-3">
+                  <label for="gender" class="form-label">Jenis Kelamin</label>
+                  <select class="form-select" name="gender">
+                      <option value="Laki Laki" selected>Laki Laki</option>
+                      <option value="Perempuan">Perempuan</option>
                   </select>
                 </div>
 
@@ -49,23 +57,25 @@
                   <select id="peran_keluarga" class="form-select" name="peran_keluarga"  >
                       <option value="Suami" selected>Suami</option>
                       <option value="Istri">Istri</option>
+                      <option hidden value="Duda/Janda">Duda/Janda</option>
                   </select>
                 </div>
                 <input type="hidden" id="no_keluarga" name="no_keluarga" value="{{$no_keluargas}}">
+                
 
                 <script type="text/javascript">
                   
                   document.getElementById("status").oninput = function(){  
-                    var status = document.getElementById("status").value;
-
-                  
+                  var status = document.getElementById("status").value;
                   var peran_keluarga = document.getElementById("peran_keluarga").value; 
-                  var result = status.localeCompare("Belum Menikah")
+                  var result = status.localeCompare("Tidak Menikah")
                   //var enable = document.getElementById("peran_keluarga");
-                  //alert(result);
                   if (result == 0) {
                     document.getElementById("peran_keluarga").disabled=true;
+                    document.getElementById("peran_keluarga").value = 'Duda/Janda';
                   }
+                  // alert(peran_keluarga);
+
                   if (result != 0) {
                     document.getElementById("peran_keluarga").disabled=false;
                   }
@@ -87,19 +97,29 @@
                     @endforeach   
                   </select>
                 </div>
-
-                <div class="mb-3">
-                  <label for="gender" class="form-label">Jenis Kelamin</label>
-                  <select class="form-select" name="gender">
-                      <option value="Laki Laki" selected>Laki Laki</option>
-                      <option value="Perempuan">Perempuan</option>
-                  </select>
-                </div>
                
                 <div class="mb-3">
                   <label for="tgl_lahir" class="form-label">Tanggal Lahir</label>
                   <input type="date" class="form-control @error('tgl_lahir') is-invalid @enderror " id="tgl_lahir" aria-describedby="emailHelp" name="tgl_lahir" placeholder="Tanggal Lahir" required autofocus value="{{old('tgl_lahir')}}">
                   @error('tgl_lahir')
+                        <div  class="invalid-feedback">
+                          {{$message}}.
+                        </div>
+                        @enderror
+                </div>
+                <div class="mb-3">
+                  <label for="tempat_lahir" class="form-label">Tempat Lahir</label>
+                  <input type="text" class="form-control @error('tempat_lahir') is-invalid @enderror " id="tempat_lahir" aria-describedby="emailHelp" name="tempat_lahir" placeholder="Contoh : DKI Jakarta" required autofocus value="{{old('tempat_lahir')}}">
+                        @error('tempat_lahir')
+                        <div  class="invalid-feedback">
+                          {{$message}}.
+                        </div>
+                        @enderror
+                </div>
+                <div class="mb-3">
+                  <label for="kewarganegaraan" class="form-label">Kewarganegaraan</label>
+                  <input type="text" class="form-control @error('kewarganegaraan') is-invalid @enderror " id="kewarganegaraan" aria-describedby="emailHelp" name="kewarganegaraan" placeholder="Contoh : Indonesia" required autofocus value="{{old('kewarganegaraan')}}">
+                        @error('kewarganegaraan')
                         <div  class="invalid-feedback">
                           {{$message}}.
                         </div>
@@ -138,7 +158,7 @@
                 </div>
                 <div class="mb-3">
                   <label for="no_kontak" class="form-label">Nomor Kontak</label>
-                  <input type="text" class="form-control @error('no_kontak') is-invalid @enderror " id="no_kontak" aria-describedby="emailHelp" name="no_kontak" placeholder="Nomor Rumah" required autofocus value="{{old('no_kontak')}}">
+                  <input type="text" class="form-control @error('no_kontak') is-invalid @enderror " id="no_kontak" aria-describedby="emailHelp" name="no_kontak" placeholder="Nomor Kontak" required autofocus value="{{old('no_kontak')}}">
                   @error('no_kontak')
                         <div  class="invalid-feedback">
                           {{$message}}.
@@ -148,7 +168,7 @@
                 <div class="mb-3">
                   <label for="pendidikan" class="form-label">Pendidikan</label>
                   <select class="form-select" name="pendidikan">
-                      <option value="Belum Sekolah" selected>Belum Sekolah</option>
+                      <option value="Tidak Sekolah" selected>Tidak Sekolah</option>
                       <option value="SD">SD</option>
                       <option value="SMP">SMP</option>
                       <option value="SMA">SMA</option>
@@ -161,12 +181,15 @@
                   <label for="pekerjaan" class="form-label">Pekerjaan</label>
                   <select class="form-select" name="pekerjaan">
                       <option value="PNS" selected>PNS</option>
+                      <option value="Tidak Bekerja" selected>Tidak Bekerja</option>
                       <option value="Militer">Militer</option>
                       <option value="Polisi">Polisi</option>
                       <option value="Dokter">Dokter</option>
                       <option value="Akademisi">Akademisi</option>
                       <option value="Karyawan Swasta">Karwayan Swasta</option>
-                      <option value="Wirausaha">Wirausaha</option>
+                      <option value="Wiraswasta">Wiraswasta</option>
+                      <option value="Pedagang">Pedagang</option>
+                      <option value="Ibu Rumah Tangga">Ibu Rumah Tangga</option>
                   </select>
                 </div>
 

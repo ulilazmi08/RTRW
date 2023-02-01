@@ -5,10 +5,13 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Surat;
+use App\Notifications\SuratNotification;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Notification as FacadesNotification;
 use PDF;
 
 class SuratController extends Controller
@@ -17,14 +20,12 @@ class SuratController extends Controller
     {
         $id = Auth::user()->id;
         $rtpengurus = DB::table('profil')->where('user_id', $id)->pluck('rt_id')->first();     
-        $latestsurat = DB::table('surat')->where('rt_pengirim', $rtpengurus)->where('status', 0)->paginate(1, ['*'], 'published');
-        $latestsuratsearch = DB::table('surat')->where('rt_pengirim', $rtpengurus)->where('status', 0)->get();
-        $approvedsurat = DB::table('surat')->where('rt_pengirim', $rtpengurus)->where('status', 1)->paginate(1, ['*'], 'unpublished');
-        $approvedsuratsearch = DB::table('surat')->where('rt_pengirim', $rtpengurus)->where('status', 1)->get();
-        // if (request('search')) {
-        //     $approvedsuratsearch->where('nama_pengirim', 'like', "%" . request('search') . "%");
-        //     $approvedsuratsearch = $approvedsurat;
-        // }
+        $role = Auth::user()->role;
+        $latestsurat = DB::table('surat')->where('rt_pengirim', $rtpengurus)->where('status', 0)->paginate(5, ['*'], 'unpublished');
+        $approvedsurat = DB::table('surat')->where('rt_pengirim', $rtpengurus)->where('status', 1)->paginate(5, ['*'], 'published');
+        if ($role != "3" && $role != "5" && $role != "2"  && $role != "1") {
+            abort(403);
+        }
         return view('persuratan.index', [
             'tittle' => 'Dashboard',
             // 'active' => 'login'
@@ -37,9 +38,9 @@ class SuratController extends Controller
         
         $id = Auth::user()->id;
         $rtpengurus = DB::table('profil')->where('user_id', $id)->pluck('rt_id')->first();     
-        $latestsurat = DB::table('surat')->where('rt_pengirim', $rtpengurus)->where('status', 0)->paginate(1, ['*'], 'published');
+        $latestsurat = DB::table('surat')->where('rt_pengirim', $rtpengurus)->where('status', 0)->paginate(1, ['*'], 'unpublished');
         $latestsuratsearch = DB::table('surat')->where('rt_pengirim', $rtpengurus)->where('status', 0)->get();
-        $approvedsurat = DB::table('surat')->where('rt_pengirim', $rtpengurus)->where('status', 1)->paginate(1, ['*'], 'unpublished');
+        $approvedsurat = DB::table('surat')->where('rt_pengirim', $rtpengurus)->where('status', 1)->paginate(1, ['*'], 'published');
         	// menangkap data pencarian
             $cari = $request->search;
             // mengambil data dari table pegawai sesuai pencarian data
@@ -52,7 +53,28 @@ class SuratController extends Controller
             'surat' => $latestsurat,
             'approvedsurats' => $approvedsurat,
     ]);
- }
+    }
+    public function searchsurat(Request $request)
+    {
+        
+        $id = Auth::user()->id;
+        $rtpengurus = DB::table('profil')->where('user_id', $id)->pluck('rt_id')->first();     
+        $latestsurat = DB::table('surat')->where('rt_pengirim', $rtpengurus)->where('status', 0)->paginate(5, ['*'], 'unpublished');
+        $approvedsurat = DB::table('surat')->where('rt_pengirim', $rtpengurus)->where('status', 1)->paginate(5, ['*'], 'published');
+        	// menangkap data pencarian
+            $cari = $request->searchsurat;
+            // mengambil data dari table pegawai sesuai pencarian data
+            $latestsuratsearch = DB::table('surat')->where('rt_pengirim', $rtpengurus)->where('status', 0)->where('nama_pengirim','like',"%".$cari."%")->paginate();
+        $approvedsuratsearch = DB::table('surat')->where('rt_pengirim', $rtpengurus)->where('status', 1)->where('nama_pengirim','like',"%".$cari."%")->paginate();
+        $latestsurat =  $latestsuratsearch;
+            // mengirim data pegawai ke view index
+        return view('persuratan.index',[ 
+            'tittle' => 'Dashboard',
+            // 'active' => 'login'
+            'surat' => $latestsurat,
+            'approvedsurats' => $approvedsurat,
+    ]);
+    }
 
     public function buatsurat(Request $request)
     {
@@ -75,9 +97,13 @@ class SuratController extends Controller
         $surat->pekerjaan_pengirim = $data['pekerjaan_pengirim'];
         $surat->agama_pengirim = $data['agama_pengirim'];
         $surat->alamat_pengirim = $data['alamat_pengirim'];
+        $surat->kewarganegaraan_pengirim = $data['kewarganegaraan'];
+        $surat->pendidikan_pengirim = $data['pendidikan'];
+        $surat->tempat_lahir_pengirim = $data['tempat_lahir'];
+        $surat->no_ktp_pengirim = $data['no_ktp_pengirim'];
         $surat->rt_pengirim = $data['rt_pengirim'];
         $surat->jenis_surat = $data['jenis_surat'];
-        $surat->nomor_surat = 1;
+        $surat->nomor_surat = $data['nomor_surat'];
         $surat->keperluan = $data['keperluan'];
         $surat->status = 0;
         $surat->save();
@@ -87,11 +113,15 @@ class SuratController extends Controller
     public function terbitsurat($id)
     {
         $suratid =  Surat::find($id);
+        $userpengirim = User::where('name', $suratid->nama_pengirim)->get();
         $suratstatus = DB::table('surat')->where('id', $suratid)->pluck('status')->first();
         if ($suratstatus == 0) {
             $suratid->status = 1;
             $suratid->save();
+            Notification::send($userpengirim, New SuratNotification($suratid->jenis_surat) );
         }
+
+
         return redirect('/surat')->with('success', 'Surat Sudah Diterbitkan');
     }
 
@@ -99,26 +129,17 @@ class SuratController extends Controller
     {
         setlocale(LC_TIME, config('app.locale'));
         $suratid = Surat::find($id);
-        $ketuart = DB::table('rt')->where('nama_rt', $suratid->rt_pengirim)->pluck('ketua_id')->first();
         $tanggallahir = DB::table('surat')->where('id', $id)->pluck('tgl_lahir_pengirim')->first();
-        $waktu =  Carbon::now()->locale('id')->format('d-m-Y');
-        $jenissurat = DB::table('surat')->where('id', $id)->pluck('jenis_surat')->first();
-        $ktp = "";
-        $kks = "";
-        if ($jenissurat == "Membuat KTP Baru") {
-            $ktp = "KP2.1";
-        }
-        if ($jenissurat == "Membuat Kartu Keluarga Baru") {
-            $kks = "II";
-        }
+        $ketuart = DB::table('rt')->where('nama_rt', $suratid->rt_pengirim)->pluck('ketua_id')->first();
+        $waktu =  Carbon::now()->locale('id')->format('d-F-Y');
+        $nomorsurat = DB::table('surat')->where('id', $id)->pluck('nomor_surat')->first();
 
         return view('persuratan.show', [
             'tittle' => 'Surat',
             'ketuart' => $ketuart,
             'surat_pengirim' => $suratid,
             'waktu' => $waktu,
-            'ktps' => $ktp,
-            'kk'=> $kks,
+            'nomor' =>$nomorsurat,
             'tgllahir' =>$tanggallahir,
 
         ]);
@@ -130,7 +151,9 @@ class SuratController extends Controller
         $suratid = Surat::find($id);
         $tanggallahir = DB::table('surat')->where('id', $id)->pluck('tgl_lahir_pengirim')->first();
         $ketuart = DB::table('rt')->where('nama_rt', $suratid->rt_pengirim)->pluck('ketua_id')->first();
-        $waktu =  Carbon::now()->locale('id')->format('d-m-Y');
+        $waktu =  Carbon::now()->locale('id')->format('d-F-Y');
+        $nomorsurat = DB::table('surat')->where('id', $id)->pluck('nomor_surat')->first();
+
       
         // instantiate and use the dompdf class
 
@@ -140,7 +163,11 @@ class SuratController extends Controller
             'surat_pengirim' => $suratid,
             'waktu' => $waktu,
             'tgllahir' =>$tanggallahir,
+            'nomor' =>$nomorsurat,
+
         ]);
+        $pdf->setPaper('A4', 'potrait');
+
         return $pdf->stream('Surat.pdf');
     }
 
@@ -148,7 +175,7 @@ class SuratController extends Controller
     {
         // $suratid = Surat::find($id);
         Surat::destroy($id);
-        return redirect('/surat')->with('success', 'Surat Direject !');
+        return redirect('/surat')->with('successDelete', 'Surat Direject !');
     }
 }
     

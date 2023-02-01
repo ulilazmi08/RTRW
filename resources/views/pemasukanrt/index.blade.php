@@ -3,8 +3,14 @@
 
 <div class="row">
     <div class="card">
+      @if(session()->has('success'))
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{session('success')}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+      @endif
         <div class="card-header">
-          Laporan Pemasukan RT
+           Pemasukan RT
         </div>
         <div class="card-body">   
           <div class="row">

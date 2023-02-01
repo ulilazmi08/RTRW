@@ -25,17 +25,22 @@
                       {{ ($suratusers ->currentpage()-1) * $suratusers ->perpage() + $loop->index + 1 }}
                     </th>
                     <td>{{$surat->keperluan}}</td>
-                    <td>{{$surat->created_at}}</td>
+                    <td>{{\Carbon\Carbon::parse($surat->created_at)->format('d-m-Y') }}</td>
                     <td>{{$surat->nomor_surat}}</td>
                     <td>
                     @if ($surat->status == 0)
                         Belum Diterbitkan
                     @else
-                        Sudah Diterbitkan
+                        <a href="/lihatsurat/{{$surat->id}}">
+                          <button type="submit" class="btn btn-primary">
+                            Tampilkan Surat
+                        </button>
+                        </a>
                     @endif
                     </td>
                   </tr>
                   @endforeach
+                  {{$suratusers->links()}}
                 </tbody>
               </table>
 

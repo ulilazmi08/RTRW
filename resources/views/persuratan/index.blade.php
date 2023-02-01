@@ -5,17 +5,28 @@
 
 <div class="row">
     <div class="card" >
+      @if(session()->has('success'))
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{session('success')}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+      @endif
+      @if(session()->has('successDelete'))
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{session('success')}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+      @endif
         <div class="card-header bg-primary text-white p-3 mb-2 ">
           Pengajuan Surat Baru
         </div>
         <div class="card-body">
-          
             <table class="table table-bordered mt-4">
               <div class="col-md-6">
                 <form action="/carisurat" method="GET">
                   <div class="input-group mb-2">
-                    <input type="text" class="form-control" placeholder="Cari Surat..." name="search" value="{{request('search')}}">
-                    <button class="btn bg-primary text-white" type="submit"  value="CARI">Cari</button>
+                    <input type="text" class="form-control" placeholder="Cari Surat..." name="searchsurat" value="{{request('searchsurat')}}">
+                    <button class="btn bg-primary text-white" type="submit"  value="searchsurat">Cari</button>
                   </div>                
                 </form>
               </div>

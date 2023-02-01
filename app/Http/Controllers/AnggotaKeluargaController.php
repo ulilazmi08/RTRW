@@ -19,7 +19,7 @@ class AnggotaKeluargaController extends Controller
     {
         $request->validate([
             'name' => 'required|max:255|unique:anggota_keluarga',
-            'email' => 'required|min:6|max:255',
+            'email' => 'min:6|max:255',
             'no_identitas' => 'required|max:16',
             'gender' => 'required|max:255', 
             'tgl_lahir' => 'required|max:255',

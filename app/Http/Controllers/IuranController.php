@@ -4,7 +4,9 @@
 namespace App\Http\Controllers;
 
 
+use App\Notifications\IuranNotification;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Notification;
 use App\Models\Iuran;
 use App\Models\BayarIuran;
 use App\Models\User;
@@ -20,17 +22,16 @@ class IuranController extends Controller
         $usernames = Auth::user()->name;
         $userscreated = DB::table('users')->where('name', $usernames)->pluck('created_at')->first();
         $laporanscreated = DB::table('iuran')->pluck('created_at');
-        // dd($userscreated);
-        // dd($laporanscreated);
         $bayariuran = BayarIuran::all();
-        $iurans = Iuran::all();
+        $userrt = Auth::user()->rt_id;  
+        $iurans =DB::table('iuran')->where('rt_iuran', $userrt)->get();
         $countiuran = count($iurans);
         $countiuranbayar = count($bayariuran);
-        $iurancompares = DB::table('iuran')->whereDate('created_at' ,'<=', $userscreated)->get();
+        $iurancompares = DB::table('iuran')->where('created_at' ,'>=', $userscreated)->where('rt_iuran', $userrt)->get();
         $bayariuranid =  DB::table('bayar_iuran')->pluck('id_iuran');
         $namapembayars =  DB::table('bayar_iuran')->pluck('nama_pembayar');
         return view('iuran.index', [
-            'tittle' => 'Iuran Bulanan',
+            'tittle' => 'Sistem Administrasi | Iuran',
             'iurans' => $iurancompares,
             'listbayar' => $bayariuran,
             'username' => $usernames,
@@ -47,10 +48,12 @@ class IuranController extends Controller
     {
         $user = User::all();
         $listbayar = BayarIuran::all();
-        $iurans = Iuran::all();
+        $userrt = Auth::user()->rt_id;
+        $iurans =DB::table('iuran')->where('rt_iuran', $userrt)->paginate(5);   
+        $iurans2 =DB::table('iuran')->where('rt_iuran', $userrt)->get();
         $idiurans = DB::table('iuran')->pluck('id');
         $countidiurans = count($idiurans);
-        $countiuran = count($iurans);
+        $countiuran = count($iurans2);
         $bulan =  Carbon::now()->locale('id')->isoFormat('MMMM');
         $tahun =  Carbon::now()->locale('id')->isoFormat('Y');
         for ($i=0; $countidiurans < 0 ; $i++) { 
@@ -58,7 +61,7 @@ class IuranController extends Controller
         }
         
         return view('iuran.create', [
-            'tittle' => 'Iuran',
+            'tittle' => 'Sistem Administrasi | Buat Iuran',
             'bulan' => $bulan,
             'tahun' => $tahun,
             'countiuran' => $countiuran,
@@ -66,6 +69,7 @@ class IuranController extends Controller
             'idiuran' => $idiurans,
             'listbayars' => $listbayar,
             'users' => $user,
+            'rt_iurans' =>$userrt,
 
         ]);
     }
@@ -77,12 +81,18 @@ class IuranController extends Controller
             'bulan' => 'required',
             'tahun' => 'required',
         ]);
+        $authrt = Auth::user()->rt_id;
+        $useriuran = User::where('rt_id', $authrt)->get();
+        $user = User::all();
         $data = $request->all();
         $iuran = new Iuran;
         $iuran->jenis_iuran = $data['jenis_iuran'];
         $iuran->bulan = $data['bulan'];
         $iuran->tahun = $data['tahun'];
+        $iuran->rt_iuran = $data['rt_iuran'];
         $iuran->save();
+        Notification::send($useriuran, New IuranNotification($request->jenis_iuran) );
+
         return redirect('/buatiuran')->with('success', 'Iuran Baru Sudah Dibuat');
     }
 
@@ -90,20 +100,20 @@ class IuranController extends Controller
     {
         $username = Auth::user()->name;
         $userid = Auth::user()->id;
-        $profil = DB::table('profil')->where('user_id', $userid)->pluck('rt_id')->first();
+        $rtuser = DB::table('profil')->where('user_id', $userid)->pluck('rt_id')->first();
         $iuranid = DB::table('iuran')->where('id', $id)->pluck('id')->first();
         $namaiuran = DB::table('iuran')->where('id', $id)->pluck('jenis_iuran')->first();
         $iuranbulan = DB::table('iuran')->where('id', $id)->pluck('bulan')->first();
         $iurantahun = DB::table('iuran')->where('id', $id)->pluck('tahun')->first();
 
         return view('iuran.bayar', [
-            'tittle' => 'Iuran Bulanan',
+            'tittle' => 'Sistem Administrasi | Bayar Iuran',
             'iuranbulan' => $iuranbulan,
             'iurantahun' => $iurantahun,
             'namauser' => $username,
             'idiuran' => $iuranid,
             'userids' => $userid,
-            'rt_pembayar' => $profil,
+            'rt_pembayar' => $rtuser,
             'nama_iurans' => $namaiuran,
             // 'active' => 'login'
         ]);
@@ -122,14 +132,16 @@ class IuranController extends Controller
         ]);
         $data = $request->all();
         $bayariuran = new BayarIuran;
+        $usernames = Auth::user()->name;
         $bayariuran->nama_pembayar = $data['nama_pembayar'];
+        $bayariuran->rt_pembayar = $data['rt_pembayar'];
         $bayariuran->id_iuran = $data['id_iuran'];
         $bayariuran->nominal = $data['nominal'];
         $bayariuran->via = $data['via'];
         $bayariuran->status = 1;
         if ($request->file('image')) {
             $file = $request->file('image');
-            $filename = \Carbon\Carbon::now()->format('d-m-Y') . '-' . $file->getClientOriginalName();
+            $filename = \Carbon\Carbon::now()->format('d-m-Y') . '-' . $usernames . $file->getClientOriginalName();
             $file->move(public_path('public/BuktiTransfer'), $filename);
             $data['image'] = $filename;
             $bayariuran->bukti = $filename;
@@ -148,6 +160,6 @@ class IuranController extends Controller
         $keuangan->nominal = $data['nominal'];
         $keuangan->via = $data['via'];
         $keuangan->save();
-        return redirect('/iuran')->with('success', 'Ktp Sudah Diupload');
+        return redirect('/iuran')->with('success', 'Iuran Sudah Dibayar');
     }
 }

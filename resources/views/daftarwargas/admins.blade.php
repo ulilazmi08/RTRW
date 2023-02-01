@@ -20,10 +20,10 @@
                 @foreach ($wargas as $warga)
                 @php
                   $role = Illuminate\Support\Facades\DB::table('users')->where('id', $warga->id)->pluck('role')->first();
-                  $countbendahara = Illuminate\Support\Facades\DB::table('users')->where('role', 4)->get();
-                  $countbendahara1 = count($countbendahara);
-                  $countsekretaris = Illuminate\Support\Facades\DB::table('users')->where('role', 5)->get();
-                  $countsekretaris1 = count($countsekretaris);
+                  $countbendahara = Illuminate\Support\Facades\DB::table('users')->where('role', 7)->get();
+                  $countbendahararw = count($countbendahara);
+                  $countsekretaris = Illuminate\Support\Facades\DB::table('users')->where('role', 8)->get();
+                  $countsekretarisrw = count($countsekretaris);
                 @endphp  
                 <td>{{$loop->iteration}}</td>
                 <td>{{$warga->name}}</td>
@@ -34,7 +34,23 @@
                       Lihat Profil
                     </button>
                   </a>
-                @if( $role !=5 && $countbendahara1 == 0 )
+                  @if( $role !=7 && $role !=4 && $role !=5 && $countbendahararw == 0 )
+                  <a href="/updatebendahararw/{{$warga->id}}">
+                    <button type="button" class="btn btn-success">
+                      <span data-feather="flag"></span>
+                      Jadikan Bendahara RW
+                    </button>
+                  </a>
+                @endif
+                @if($role != 8 && $role !=4 && $role !=5 && $countsekretarisrw == 0 )
+                <a href="/updatesekretarisrw/{{$warga->id}}">
+                  <button type="button" class="btn btn-success">
+                    <span data-feather="flag"></span>
+                    Jadikan Sekretaris RW
+                  </button>
+                </a>
+                @endif
+                {{-- @if( $role !=5 && $countbendahara1 == 0 )
                   <a href="/updatebendahara/{{$warga->id}}">
                     <button type="button" class="btn btn-success">
                       <span data-feather="flag"></span>
@@ -82,13 +98,21 @@
                     Jadikan Sekretaris
                   </button>
                 </a>
-              @endif
-              <a href="/jadikanwarga/{{$warga->id}}">
-                <button type="button" class="btn btn-danger">
+              @endif --}}
+              @if ($role != 6 && $role !=5 && $role !=4)
+              <a href="/jadikanwargarw/{{$warga->id}}">
+                <button type="button" class="btn btn-warning">
                   <span data-feather="eye"></span>
                   Jadikan Warga
                 </button>
               </a>
+              @endif
+                <form action="/deletewargarw/{{$warga->id}}" method="post" class="d-inline">
+                  @method('delete')
+                  @csrf
+                  <button value="DELETE" type="button submit" class="d-inline btn btn-danger" onclick="return confirm('Yakin ingin menghapus warga ini ?')">
+                    Hapus Warga</button>
+                </form>
                 </td>
               </tr>
               @endforeach

@@ -35,7 +35,7 @@
 </div>
 
 <div class="row mt-5">
-    <div class="col-xl-4 col-lg-5">
+    <div class="col-xl-6 col-lg-5">
         <div class="card" >
             <div id="chartPekerjaan" style="height: 300px; width: 85%;" class="card-body">
                 <table class="table mt-4">
@@ -45,8 +45,8 @@
             </div>
         </div>
     </div>
-
-    <div class="col-xl-4 col-lg-5">
+   
+    <div class="col-xl-6 col-lg-5">
         <div class="card ms-3" >
             <div id="chartUmur" style="height: 300px; width: 85%;" class="card-body">
                 <table class="table mt-4">
@@ -57,6 +57,17 @@
         </div>
     </div>
 </div>
+<div class="col-xl-4 col-lg-5 mt-5">
+    <div class="card" >
+        <div id="chartKK" style="height: 300px; width: 85%;" class="card-body">
+            <table class="table mt-4">
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
 
 {{-- Script Chart --}}
 <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
@@ -82,6 +93,7 @@
             ]
         });
         chart.render();
+       
 
         var belumsekolah = <?php echo $belumsekolah ?>;
         var sd = <?php echo $sd ?>;
@@ -151,25 +163,30 @@
         var dokter = <?php echo $dokter ?>;
         var akademisi = <?php echo $akademisi ?>;
         var karyawanswasta = <?php echo $karyawanswasta ?>;
-        var wirausaha = <?php echo $wirausaha ?>;
+        var wiraswasta = <?php echo $wiraswasta ?>;
+        var pedagang = <?php echo $pedagang ?>;
+        var belumbekerja = <?php echo $belumbekerja ?>;
         var chart = new CanvasJS.Chart("chartPekerjaan", {
             title:{
-                text: "Berdasarkan Pekerjaan"              
+                text: 'Berdasarkan Pekerjaan'              
             },
             data: [              
             {
-                // Change type to "doughnut", "line", "splineArea", etc.
+                axisX:{
+                interval: 1,
+                labelAngle: -70 
+            },
                 type: "column",
                 dataPoints: [
                     { label: "pns",  y: pns  },
-                    { label: "militer", y: militer  },
                     { label: "polisi", y: polisi  },
                     { label: "dokter", y: dokter  },
+                    { label: "militer", y: militer  },
                     { label: "akademisi", y: akademisi  },
-                    { label: "karyawanswasta", y: karyawanswasta  },
-                    { label: "wirausaha", y: wirausaha  },
-
-
+                    { label: "karyawan swasta", y: karyawanswasta  },
+                    { label: "wiraswasta", y: wiraswasta  },
+                    { label: "pedagang", y: pedagang  },
+                    { label: "tidak bekerja", y: belumbekerja  },
                    
                 ]
             }
@@ -204,6 +221,23 @@
                     { label: "50", y: umur50  },
 
 
+                   
+                ]
+            }
+            ]
+        });
+        chart.render();
+        var totalkk = <?php echo $jumlahkk ?>;
+        var chart = new CanvasJS.Chart("chartKK", {
+            title:{
+                text: "Total KK RW 06"              
+            },
+            data: [              
+            {
+                // Change type to "doughnut", "line", "splineArea", etc.
+                type: "column",
+                dataPoints: [
+                    { label: "Total KK",  y: totalkk  },
                    
                 ]
             }

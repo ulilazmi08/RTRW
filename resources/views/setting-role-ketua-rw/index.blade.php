@@ -35,7 +35,6 @@
                       @foreach ($notadmin as $user)
                         @csrf
                       @if ($count2 < 1)
-                      {{-- @if ($role == 1) --}}
                       <tr>
                             <td>{{$loop->iteration}}</td>
                             <td>{{$user->name}}</td>
@@ -47,7 +46,6 @@
                               </a>
                             </td>
                           @endif
-                        {{-- @endif --}}
                       @endforeach
                     </tr> 
                 </tbody>

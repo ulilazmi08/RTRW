@@ -20,13 +20,7 @@
                     @if ($role == 1 || $role == 2)
                     @foreach ($rt as $rts)
                     @csrf
-                      {{-- @php
-                        $rubahrt = Illuminate\Support\Facades\DB::table('users')->where('role', 3)->get()
-                        // foreach ($rubahrt as rubah) {
-                        //   # code...
-                        // };
-                        // $definert = Illuminate\Support\Facades\DB::table('profil')->where('user_id', $rubahrt)->get();
-                      @endphp --}}
+                     
                       <tr>
                       <td>{{$loop->iteration}}</td>
                       <td>{{$rts->nama_rt}}</td>

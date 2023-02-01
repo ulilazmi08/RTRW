@@ -23,6 +23,8 @@ class CreateProfilTable extends Migration
             $table->string('image_ktp')->nullable();
             $table->string('image_kk')->nullable();
             $table->string('alamat');
+            $table->string('tempat_lahir');
+            $table->string('kewarganegaraan');
             $table->date('tgl_lahir');
             $table->string('status');
             $table->string('peran_keluarga')->nullable();

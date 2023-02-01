@@ -6,26 +6,28 @@ use Illuminate\Http\Request;
 use App\Models\Profil;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use App\Models\User;
 
 
 class StatistikController extends Controller
 {
-    public function index()
-    {
-        return view('statistik.index', [
-            'tittle' => 'Dashboard | Statistik Warga',
-            // 'active' => 'login'
-        ]);
-    }
+   
 
     public function statistik()
     {
         //jenis kelamin
+        $lakilakianggota = DB::table('anggota_keluarga')->where('gender', 'like', 'Laki Laki')->get();
+        $perempuananggota = DB::table('anggota_keluarga')->where('gender', 'like', 'Perempuan')->get();
+        $kk = DB::table('users')->pluck('no_keluarga');
+        $countkk = count($kk);
+        // $countlakilakianggota = count($lakilakianggota);
+        // $countperempuananggota = count($perempuananggota);
         $lakilaki = DB::table('profil')->where('gender', 'like', 'Laki Laki')->get();
         $perempuan = DB::table('profil')->where('gender', 'like', 'Perempuan')->get();
-        $countlakilaki = count($lakilaki);
-        $countperempuan = count($perempuan);
+        $countlakilaki = count($lakilaki)+count($lakilakianggota);
+        $countperempuan = count($perempuan)+count($perempuananggota);
 
+      
         //pendidikan
         $belumsekolah = DB::table('profil')->where('pendidikan', 'like', 'Belum Sekolah')->get();
         $sd = DB::table('profil')->where('pendidikan', 'like', 'SD')->get();
@@ -34,13 +36,20 @@ class StatistikController extends Controller
         $s1 = DB::table('profil')->where('pendidikan', 'like', 'S1')->get();
         $s2 = DB::table('profil')->where('pendidikan', 'like', 'S2')->get();
         $s3 = DB::table('profil')->where('pendidikan', 'like', 'S3')->get();
-        $countbelumsekolah = count($belumsekolah);
-        $countsd = count($sd);
-        $countsmp = count($smp);
-        $countsma = count($sma);
-        $counts1 = count($s1);
-        $counts2 = count($s2);
-        $counts3 = count($s3);
+        $belumsekolahanggota = DB::table('anggota_keluarga')->where('pendidikan', 'like', 'Belum Sekolah')->get();
+        $sdanggota = DB::table('anggota_keluarga')->where('pendidikan', 'like', 'SD')->get();
+        $smpanggota = DB::table('anggota_keluarga')->where('pendidikan', 'like', 'SMP')->get();
+        $smaanggota = DB::table('anggota_keluarga')->where('pendidikan', 'like', 'SMA')->get();
+        $s1anggota = DB::table('anggota_keluarga')->where('pendidikan', 'like', 'S1')->get();
+        $s2anggota = DB::table('anggota_keluarga')->where('pendidikan', 'like', 'S2')->get();
+        $s3anggota = DB::table('anggota_keluarga')->where('pendidikan', 'like', 'S3')->get();
+        $countbelumsekolah = count($belumsekolah)+count($belumsekolahanggota);
+        $countsd = count($sd)+count($sdanggota);
+        $countsmp = count($smp)+count($smpanggota);
+        $countsma = count($sma)+count($smaanggota);
+        $counts1 = count($s1)+count($s1anggota);
+        $counts2 = count($s2)+count($s2anggota);
+        $counts3 = count($s3)+count($s3anggota);
         //agama
 
         $islam = DB::table('profil')->where('agama', 'like', 'Islam')->get();
@@ -49,12 +58,18 @@ class StatistikController extends Controller
         $protestan = DB::table('profil')->where('agama', 'like', 'Protestan')->get();
         $katolik = DB::table('profil')->where('agama', 'like', 'Katolik')->get();
         $konghucu = DB::table('profil')->where('agama', 'like', 'Konghucu')->get();
-        $countislam = count($islam);
-        $counthindu = count($hindu);
-        $countbudha = count($budha);
-        $countkatolik = count($katolik);
-        $countprotestan = count($protestan);
-        $countkonghucu = count($konghucu);
+        $islamanggota = DB::table('anggota_keluarga')->where('agama', 'like', 'Islam')->get();
+        $hinduanggota = DB::table('anggota_keluarga')->where('agama', 'like', 'Hindu')->get();
+        $budhaanggota = DB::table('anggota_keluarga')->where('agama', 'like', 'Budha')->get();
+        $protestananggota = DB::table('anggota_keluarga')->where('agama', 'like', 'Protestan')->get();
+        $katolikanggota = DB::table('anggota_keluarga')->where('agama', 'like', 'Katolik')->get();
+        $konghucuanggota = DB::table('anggota_keluarga')->where('agama', 'like', 'Konghucu')->get();
+        $countislam = count($islam)+count($islamanggota);
+        $counthindu = count($hindu)+count($hinduanggota);
+        $countbudha = count($budha)+count($budhaanggota);
+        $countkatolik = count($katolik)+count($katolikanggota);
+        $countprotestan = count($protestan)+count($protestananggota);
+        $countkonghucu = count($konghucu)+count($konghucuanggota);
         //pekerjaan
 
         $pns = DB::table('profil')->where('pekerjaan', 'like', 'PNS')->get();
@@ -63,17 +78,31 @@ class StatistikController extends Controller
         $dokter = DB::table('profil')->where('pekerjaan', 'like', 'Dokter')->get();
         $akademisi = DB::table('profil')->where('pekerjaan', 'like', 'Akademisi')->get();
         $karyawanswasta = DB::table('profil')->where('pekerjaan', 'like', 'Karyawan Swasta')->get();
-        $wirausaha = DB::table('profil')->where('pekerjaan', 'like', 'Wirausaha')->get();
-        $countpns = count($pns);
-        $countmiliter = count($militer);
-        $countpolisi = count($polisi);
-        $countdokter = count($dokter);
-        $countakademisi = count($akademisi);
-        $countkaryawanswasta = count($karyawanswasta);
-        $countwirausaha = count($wirausaha);
+        $pedagang = DB::table('profil')->where('pekerjaan', 'like', 'Pedagang')->get();
+        $belumkerja = DB::table('profil')->where('pekerjaan', 'like', 'Tidak Bekerja')->get();
+        $wiraswasta = DB::table('profil')->where('pekerjaan', 'like', 'Wiraswasta')->get();
+        $pnsanggota = DB::table('anggota_keluarga')->where('pekerjaan', 'like', 'PNS')->get();
+        $militeranggota = DB::table('anggota_keluarga')->where('pekerjaan', 'like', 'Militer')->get();
+        $pedaganganggota = DB::table('anggota_keluarga')->where('pekerjaan', 'like', 'Pedagang')->get();
+        $polisianggota = DB::table('anggota_keluarga')->where('pekerjaan', 'like', 'Polisi')->get();
+        $dokteranggota = DB::table('anggota_keluarga')->where('pekerjaan', 'like', 'Dokter')->get();
+        $akademisianggota = DB::table('anggota_keluarga')->where('pekerjaan', 'like', 'Akademisi')->get();
+        $karyawanswastaanggota = DB::table('anggota_keluarga')->where('pekerjaan', 'like', 'Karyawan Swasta')->get();
+        $belumkerjaanggota = DB::table('anggota_keluarga')->where('pekerjaan', 'like', 'Belum Bekerja')->get();
+        $wiraswastaanggota = DB::table('anggota_keluarga')->where('pekerjaan', 'like', 'Wiraswasta')->get();
+        $countpns = count($pns)+count($pnsanggota);
+        $countbelumbekerja = count($belumkerja)+count($belumkerjaanggota);
+        $countpedagang = count($pedagang)+count($pedaganganggota);
+        $countmiliter = count($militer)+count($militeranggota);
+        $countpolisi = count($polisi)+count($polisianggota);
+        $countdokter = count($dokter)+count($dokteranggota);
+        $countakademisi = count($akademisi)+count($akademisianggota);
+        $countkaryawanswasta = count($karyawanswasta)+count($karyawanswastaanggota);
+        $countwiraswasta = count($wiraswasta)+count($wiraswastaanggota);
 
         //tgl lahir
         $date = DB::table('profil')->pluck('tgl_lahir');
+        $dateanggota = DB::table('anggota_keluarga')->pluck('tgl_lahir');
         $arraydate = [];
         $countlenght = count($date);
         for ($i = 0; $i < $countlenght; $i++) {
@@ -82,6 +111,14 @@ class StatistikController extends Controller
             $diff = $date1->diffInYears($now);
             array_push($arraydate, $diff);
         }
+        $countlenghtanggota = count($dateanggota);
+        for ($i = 0; $i < $countlenghtanggota; $i++) {
+            $date2 = Carbon::parse($dateanggota[$i]);
+            $now = Carbon::now();
+            $diff = $date2->diffInYears($now);
+            array_push($arraydate, $diff);
+        }
+
         //umur 1 0-5
         $countumur = count($arraydate);
         $umur05 = [];
@@ -149,8 +186,10 @@ class StatistikController extends Controller
             'dokter' => $countdokter,
             'akademisi' => $countakademisi,
             'karyawanswasta' => $countkaryawanswasta,
-            'wirausaha' => $countwirausaha,
-
+            'wiraswasta' => $countwiraswasta,
+            'belumbekerja' => $countbelumbekerja,
+            'pedagang' => $countpedagang,
+            'jumlahkk' =>$countkk,
             //Umur
             'umur05' =>  $countumur05,
             'umur611' => $countumur611,

@@ -18,6 +18,10 @@ class LaporanKeuanganRTController extends Controller
         $authrt = Auth::user()->rt_id;
         $laporankeuangan = KeuanganRT::latest();
         $latestkeuangan = Keuangan::latest(); 
+        $role = Auth::user()->role;
+        if ($role != "3" && $role != "4"  && $role != "1") {
+            abort(403);
+        }
         
         if (request()->start_date || request()->end_date) {
             $start_date = Carbon::parse(request()->start_date)->toDateTimeString();
@@ -34,6 +38,23 @@ class LaporanKeuanganRTController extends Controller
             // 'active' => 'login'
         ]);
     }   
+    public function carilaporanrt(Request $request)
+    {
+        $laporankeuangan = KeuanganRT::latest();
+        $latestkeuangan = Keuangan::latest(); 
+        	// menangkap data pencarian
+            $cari = $request->searchlaporanrt;
+            // mengambil data dari table pegawai sesuai pencarian data
+        $keuanganrtsearch = DB::table('keuangan_rt')->where('nama_laporan','like',"%".$cari."%")->paginate();
+        $laporankeuangan =  $keuanganrtsearch;
+            // mengirim data pegawai ke view index
+        return view('home.keuangan_rw',[ 
+            'tittle' => 'Dashboard | Laporan Keuangan RW',
+            // 'active' => 'login'
+            'keuangans'=> $latestkeuangan->paginate(7),
+            'laporankeuangans' => $laporankeuangan,
+    ]);
+    }
 
     public function store(Request $request)
     {
@@ -49,7 +70,7 @@ class LaporanKeuanganRTController extends Controller
         $iuran->rt = $data['rt'];
         $iuran->ke = $data['ke'];
         $iuran->save();
-        return redirect('/laporan_keuangan_rt')->with('success', 'Iuran Baru Sudah Dibuat');
+        return redirect('/laporan_keuangan_rt')->with('success', 'Laporan Sudah Dibuat  ');
     }
 
     public function show($id)

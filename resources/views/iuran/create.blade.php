@@ -26,7 +26,7 @@
           <form method="POST" action="/createiuran" enctype="multipart/form-data">
             @csrf
             <div class="mb-3">
-                <label for="jenis_iuran" class="form-label">Nomor KTP</label>
+                <label for="jenis_iuran" class="form-label">Nama Iuran</label>
                 <input type="text" class="form-control @error('jenis_iuran') is-invalid @enderror " id="jenis_iuran" aria-describedby="emailHelp" name="jenis_iuran" placeholder="Nama Iuran" required autofocus value="{{old('jenis_iuran')}}">
                       @error('jenis_iuran')
                       <div  class="invalid-feedback">
@@ -34,6 +34,7 @@
                       </div>
                       @enderror
                 <input type="hidden" id="bulan" name="bulan" value="{{$bulan}}">
+                <input type="hidden" id="rt_iuran" name="rt_iuran" value="{{$rt_iurans}}">
                 <input type="hidden" id="tahun" name="tahun" value="{{$tahun}}">
             </div>          
         </div>
@@ -70,33 +71,27 @@
 </table>
   @else 
     @foreach ($iurans as $iuran)
-        <div class="card mt-4">
-          <div class="card-header bg-primary">
-            {{$iuran->jenis_iuran}} Tahun {{$iuran->tahun}}
-          </div>
-          <div class="card-body">
-            <table class="table table-bordered border-dark ">
+
+            <table class="table  border-dark mt-4 ">
               <thead>
-                <tr class=" bg-warning">
-                  <th scope="col">Data Warga Sudah Bayar</th>
+                <tr class=" bg-primary text-white">
+                  <th scope="col">Data Warga Sudah Bayar   {{$iuran->jenis_iuran}} RT {{$iuran->rt_iuran}} Tahun {{$iuran->tahun}}</th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody>
                 <tr >
+                  <td >
+                      List Nama Pembayar
+                  </td>
                   <td>
-                    <button scope="row" class="btn-primary" onclick="showHideRow({{$iuran->id}});">
-                      List Nama
-                    </button>  
+                    <button type="button" class="btn btn-primary " onclick="showHideRow({{$iuran->id}});">
+                      Expand  
+                    </button>
                   </td>
                 </tr>
-                <td class="bg-info transition: max-height 0.75s ease-in" id="{{$iuran->id}}" class="hidden_row" colspan=4 >
-                  <table class="table ">
-                    <thead>
-                      <tr>
-                        <th scope="col">Nama</th>
-                      </tr>
-                    </thead>
-                    <tbody>
+                <td class="transition: max-height 0.75s ease-in" id="{{$iuran->id}}" class="hidden_row" colspan=4 >
+                  <table class="table  table-bordered border-dark">
                           @php
                           $paginatebayar = Illuminate\Support\Facades\DB::table('bayar_iuran')->where('id_iuran', $iuran->id)->paginate(5, ['*'], $iuran->id);
                           $namabayar = collect($paginatebayar->items())->pluck('nama_pembayar');
@@ -108,18 +103,15 @@
                             echo "</tr>";
                           }
                           @endphp  
-                    </tbody>
                   </table>
                   {{$paginatebayar->links()}}
                 </td>
                 </td>
               </tbody>
             </table>
-          </div>
-        </div>
-        
-       
   @endforeach
+  {{$iurans->links()}}
+
         
 @endif
 </div>

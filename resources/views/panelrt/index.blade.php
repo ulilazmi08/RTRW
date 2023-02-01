@@ -2,46 +2,131 @@
 @section('container')
 
 <div class="row">
-    <div class="card">
+      <div class="card mt-5">
         <div class="card-header">
-          Setting Role Warga
+            <h1 class="h2">Selamat Datang {{ auth()->user()->name }}
+                @if ($userrole == 3)
+                    Ketua RT
+                @endif
+                @if ($userrole == 2)
+                    Ketua RW 06
+                @endif
+            </h1>
+
         </div>
         <div class="card-body">
-            <table class="table mt-4">
-                <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Nama</th>
-                        <th scope="col">No Rumah</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @if ($role == 3)
-                    @foreach ($getall as $key => $row)
-                    @csrf
-                    <tbody>
-                          <tr>
-                            <th scope="row">{{$loop->iteration}}</th>
-                            <td>{{$arraynama[$key]}}</td>
-                            <td>{{$row['no_rumah']}}</td>
-                            <td>
-                              <a href="#">
-                                <button type="submit" class="btn btn-primary">
-                                  Jadikan RT
-                              </button>
-                              </a>
-                            </td>
-                          </tr>
-                          @endforeach
-                      </tbody>
-                    @endif
-                </tbody>
-              </table>
+            <div class="row">
+                <div class="col-md-3 text-center">
+                    <a href="/panelrt" class="text-decoration-none">
+                        <div class="card white">
+                            <div class="card-header bg-primary text-light">
+                                Panel RT
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                @if(Gate::check('ketuart') || Gate::check('admin') )
+                <div class="col-md-3 text-center">
+                    <a href="/profil/creaate" class="text-decoration-none">
+                        <div class="card white">
+                            <div class="card-header bg-primary text-light">
+                                Tambah Warga
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                @endif
+            
+                @if(Gate::check('ketuarw') || Gate::check('admin') )
+                <div class="col-md-3 text-center">
+                  <a href="/statistik" class="text-decoration-none">
+                      <div class="card white">
+                          <div class="card-header bg-primary text-light">
+                              Statistik Warga
+                          </div>
+                      </div>
+                  </a>
+              </div>
+              @endif
+                @if(Gate::check('ketuart')  || Gate::check('bendahara') || Gate::check('admin') )
+                    <div class="col-md-3 mt-3 text-center">
+                        <a href="/buatiuran" class="text-decoration-none">
+                            <div class="card white">
+                                <div class="card-header bg-primary text-light">
+                                    Buat Iuran
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                @endif
+                @if (Gate::check('ketuart')  || Gate::check('bendahara') || Gate::check('admin'))
+                <div class="col-md-3 mt-3 text-center">
+                  <a href="/laporan_rt" class="text-decoration-none">
+                      <div class="card white">
+                          <div class="card-header bg-primary text-light">
+                              Laporan Keuangan RT
+                          </div>
+                      </div>
+                  </a>
+                </div>
+                @endif
+                @if (Gate::check('ketuarw') || Gate::check('bendahararw') )
+                <div class="col-md-3 text-center">
+                  <a href="/laporan_rw" class="text-decoration-none">
+                      <div class="card white">
+                          <div class="card-header bg-primary text-light">
+                              Laporan Keuangan RW
+                          </div>
+                      </div>
+                  </a>
+                </div>
+                @endif
+                @if (Gate::check('ketuarw') || Gate::check('bendahara') || Gate::check('admin'))
+                <div class="col-md-3  text-center">
+                  <a href="/laporan_rt" class="text-decoration-none">
+                      <div class="card white">
+                          <div class="card-header bg-primary text-light">
+                              Laporan Keuangan RT
+                          </div>
+                      </div>
+                  </a>
+                </div>
+                @endif
+                @if (Gate::check('ketuart') || Gate::check('sekretaris') || Gate::check('sekretarisrw') || Gate::check('admin'))
+                <div class="col-md-3 mt-3 text-center">
+                  <a href="/surat" class="text-decoration-none">
+                      <div class="card white">
+                          <div class="card-header bg-primary text-light">
+                            Pengajuan Surat
+                          </div>
+                      </div>
+                  </a>
+                </div>
+                @endif
+              @if (Gate::check('ketuart')  || Gate::check('admin'))
+              <div class="col-md-3 mt-3 text-center">
+                <a href="/daftarwarga" class="text-decoration-none">
+                    <div class="card white">
+                        <div class="card-header bg-primary text-light">
+                          Daftar Warga RT
+                        </div>
+                    </div>
+                </a>
+              </div>
+              @endif
+                @if (Gate::check('ketuarw') || Gate::check('bendahara') || Gate::check('admin'))
+                <div class="col-md-3 mt-3 text-center">
+                    <a href="/daftarwargaadmin" class="text-decoration-none">
+                        <div class="card white">
+                            <div class="card-header bg-primary text-light">
+                                Daftar Warga RW
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                @endif
+            </div>
         </div>
-      </div>
-
-    
-
 </div>
 
 @endsection

@@ -8,7 +8,7 @@
     <meta name="generator" content="Hugo 0.88.1">
 
     <link rel="canonical" href="https://getbootstrap.com/docs/5.1/examples/sign-in/">
-
+<title>Halaman Login | Sistem Administrasi RW 06</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 
     <!-- Bootstrap core CSS -->
@@ -37,22 +37,24 @@
   <body class="text-center">
     
   {{-- jika ada key success maka print alert dengan tulisan yang ada di success --}}
-  @if(session()->has('success'))
-  <div class="alert alert-success alert-dismissible fade show" role="alert">
-    {{session('success')}}
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-  </div>
-  @endif
-  @if(session()->has('loginError'))
-  <div class="alert alert-danger alert-dismissible fade show" role="alert">
-    {{session('loginError')}}
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-  </div>
-  @endif
+
+  
     <main class="form-signin">
+      @if(session()->has('loginError'))
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{session('loginError')}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+      @endif
+      @if(session()->has('message'))
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{session('message')}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+      @endif
         <form action="/login" method="post">
           @csrf
-          <h1 class="h3 mb-3 fw-normal text-center">Please Login</h1>
+          <h3 class="h3 mb-3 fw-normal text-center">Halaman Login Sistem Administrasi RW 06</h3>
           <div class="form-floating">
             <input type="email" name="email" class="form-control @error('email') is-invalid @enderror" id="email" placeholder="name@example.com" autofocus required
             value="{{old('email')}}">
@@ -67,6 +69,16 @@
             <input type="password" class="form-control" name="password" id="password" placeholder="Password" required>
             <label for="password">Password</label>
           </div>
+          <div class="form-floating">
+            {!! NoCaptcha::renderJs() !!}
+            {!! NoCaptcha::display() !!}
+            @if ($errors->has('g-recaptcha-response'))
+            <span class="help-block text-danger">
+            <strong>{{ $errors->first('g-recaptcha-response') }}</strong>
+            </span>
+            @endif
+          </div>
+          
       
           <div class="checkbox mb-3">
           </div>
@@ -74,7 +86,7 @@
         </form>
         {{-- karena display inline jadi pakai block dulu --}}
         <small class="d-block text-center mt-3">
-            Not Registered ? <a href="/register">Register Now !</a>
+            Lupa Password ? <a href="/forget-password">Klik Disini !</a>
         </small>
     </main>
 
