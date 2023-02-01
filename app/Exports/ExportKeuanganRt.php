@@ -30,14 +30,15 @@ class ExportKeuanganRt implements FromView, ShouldAutoSize
     public function view():View 
     {
         
-        $latestkeuanganrw = Keuangan::latest(); 
-        $keuangandari = DB::table('keuangan_rw')->where('id', $this->id)->pluck('dari')->first();
-        $keuanganke = DB::table('keuangan_rw')->where('id', $this->id)->pluck('ke')->first();
+        $authrt = Auth::user()->rt_id;
+        $latestkeuanganrt = DB::table('keuangan')->where('rt_pembayar', $authrt)->latest();
+        $keuangandari = DB::table('keuangan_rt')->where('id',  $this->id)->where('rt', $authrt)->pluck('dari')->first();
+        $keuanganke = DB::table('keuangan_rt')->where('id',  $this->id)->where('rt', $authrt)->pluck('ke')->first();
         $start_date = Carbon::parse($keuangandari)->toDateTimeString();
         $end_date = Carbon::parse($keuanganke)->endOfDay()->toDateTimeString();
-        $latestkeuanganrw->whereBetween('created_at', [$start_date,$end_date])->get();
-        $nominalpengeluaran = DB::table('keuangan')->where('jenis', "Pengeluaran")->whereBetween('created_at', [$start_date,$end_date])->pluck('nominal');
-        $nominalpemasukan = DB::table('keuangan')->where('jenis', "Pemasukan")->whereBetween('created_at', [$start_date,$end_date])->pluck('nominal');   
+        $latestkeuanganrt->whereBetween('created_at', [$start_date,$end_date])->get();
+        $nominalpengeluaran = DB::table('keuangan')->where('rt_pembayar', $authrt)->where('jenis', "Pengeluaran")->whereBetween('created_at', [$start_date,$end_date])->pluck('nominal');
+        $nominalpemasukan = DB::table('keuangan')->where('rt_pembayar', $authrt)->where('jenis', "Pemasukan")->whereBetween('created_at', [$start_date,$end_date])->pluck('nominal');   
         $sumnominalpengeluaran = 0;
         $sumnominalpemasukan = 0;
         $countnominalpengeluaran = count($nominalpengeluaran);
@@ -50,11 +51,14 @@ class ExportKeuanganRt implements FromView, ShouldAutoSize
             $nominal1 = (int)$nominalpemasukan[$i]; 
             $sumnominalpemasukan += $nominal1;
         }
-        $totalsumnominals = $sumnominalpemasukan -= $sumnominalpengeluaran;
-        return view('laporanrw.table', [
-            'tittle' => 'Dashboard | Laporan Keuangan RW',
-            'laporans' => $latestkeuanganrw->get(),
+        $sumnominalpemasukan1 = $sumnominalpemasukan;
+        $totalsumnominals = $sumnominalpemasukan1 -= $sumnominalpengeluaran;
+        return view('laporanrt.table', [
+            'tittle' => 'Dashboard | Laporan Keuangan RT',
+            'laporans' => $latestkeuanganrt->get(),
             'totalsumnominal' => $totalsumnominals,
+            'totalpemasukan' => $sumnominalpemasukan,
+            'totalpengeluaran' => $sumnominalpengeluaran,
             // 'active' => 'login'
         ]);
     }

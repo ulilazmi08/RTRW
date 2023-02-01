@@ -18,6 +18,7 @@ class LaporanPemasukanController extends Controller
 {
     public function index()
     {
+        $role = Auth::user()->role;
         $nominal = DB::table('keuangan')->where('jenis', "Pemasukan")->pluck('nominal');
         $pengeluaran = DB::table('keuangan')->where('jenis', "Pemasukan")->paginate(10);
         $sumnominal = 0;
@@ -29,6 +30,9 @@ class LaporanPemasukanController extends Controller
         $username = Auth::user()->name;
         $userid = Auth::user()->id;
         $profil = DB::table('profil')->where('user_id', $userid)->pluck('rt_id')->first();  
+        if ($role != "2"  && $role != "7") {
+            abort(403);
+        }
         return view('pemasukanrw.index',[
             'tittle' => 'Dashboard | Laporan Pengeluaran RW',
             'namauser' => $username,

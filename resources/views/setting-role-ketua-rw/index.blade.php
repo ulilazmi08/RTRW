@@ -4,13 +4,13 @@
 <div class="row">
     <div class="card">
         <div class="card-header">
-          Setting Role Warga
+          Setting Role Ketua RW
         </div>
         <div class="card-body">
             <table class="table mt-4">
                 <thead>
                     <tr>
-                        <th scope="col">#</th>
+                        <th scope="col">No</th>
                         <th scope="col">Nama</th>
                         <th scope="col">Status Warga</th>
                     </tr>
@@ -35,7 +35,6 @@
                       @foreach ($notadmin as $user)
                         @csrf
                       @if ($count2 < 1)
-                      {{-- @if ($role == 1) --}}
                       <tr>
                             <td>{{$loop->iteration}}</td>
                             <td>{{$user->name}}</td>
@@ -47,7 +46,6 @@
                               </a>
                             </td>
                           @endif
-                        {{-- @endif --}}
                       @endforeach
                     </tr> 
                 </tbody>

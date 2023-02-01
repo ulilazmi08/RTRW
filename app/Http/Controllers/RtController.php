@@ -4,6 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\RT;
 
+use Carbon\Carbon;
+use App\Models\Iuran;
+use App\Models\BayarIuran;
+use App\Models\User;
+use App\Models\Keuangan;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+
 use Illuminate\Http\Request;
 
 class RtController extends Controller
@@ -15,8 +23,10 @@ class RtController extends Controller
      */
     public function index()
     {
+        $rts =  DB::table('rt')->get();
         return view('dashboard.setting-rt', [
             'tittle' => 'Setting RT',
+            'rt' => $rts,
         ]);
     }
 

@@ -19,7 +19,7 @@ class CreateAnggotaKeluargaTable extends Migration
             $table->integer('no_keluarga');
             $table->string('name')->unique();
             $table->string('no_identitas')->unique();
-            $table->string('email');
+            $table->string('email')->nullable();
             $table->string('gender');
             $table->string('rt');
             $table->string('image')->nullable();

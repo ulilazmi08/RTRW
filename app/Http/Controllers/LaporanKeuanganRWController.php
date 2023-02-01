@@ -16,23 +16,45 @@ class LaporanKeuanganRWController extends Controller
 {
     public function index()
     {
+        
         $laporankeuangan = KeuanganRW::latest();
         $latestkeuangan = Keuangan::latest(); 
-        
+        $role = Auth::user()->role;
+
         if (request()->start_date || request()->end_date) {
             $start_date = Carbon::parse(request()->start_date)->toDateTimeString();
             $end_date = Carbon::parse(request()->end_date)->toDateTimeString();
             $latestkeuangan->whereBetween('created_at',[$start_date,$end_date])->get();
-        // } else {
-        //     $datakeuangan = Keuangan::latest()->get();
         }  
+        
+        if ( $role != "2"  && $role != "7") {
+            abort(403);
+        }
         return view('home.keuangan_rw', [
             'tittle' => 'Dashboard | Laporan Keuangan RW',
             'keuangans'=> $latestkeuangan->paginate(7),
             'laporankeuangans' => $laporankeuangan->paginate(7),
             // 'active' => 'login'
         ]);
-    }   
+    }  
+    
+    public function carilaporan(Request $request)
+    {
+        $laporankeuangan = KeuanganRW::latest();
+        $latestkeuangan = Keuangan::latest(); 
+        	// menangkap data pencarian
+            $cari = $request->searchlaporan;
+            // mengambil data dari table pegawai sesuai pencarian data
+        $keuangansearch = DB::table('keuangan_rw')->where('nama_laporan','like',"%".$cari."%")->paginate();
+        $laporankeuangan =  $keuangansearch;
+            // mengirim data pegawai ke view index
+        return view('home.keuangan_rw',[ 
+            'tittle' => 'Dashboard | Laporan Keuangan RW',
+            // 'active' => 'login'
+            'keuangans'=> $latestkeuangan->paginate(7),
+            'laporankeuangans' => $laporankeuangan,
+    ]);
+    }
 
     public function store(Request $request)
     {
@@ -47,7 +69,7 @@ class LaporanKeuanganRWController extends Controller
         $iuran->dari = $data['dari'];
         $iuran->ke = $data['ke'];
         $iuran->save();
-        return redirect('/laporan_keuangan_rw')->with('success', 'Iuran Baru Sudah Dibuat');
+        return redirect('/laporan_keuangan_rw')->with('success', 'Laporan Sudah Dibuat');
     }
 
     public function show($id)

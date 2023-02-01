@@ -4,8 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Exports\ExportKeuangan;
+use App\Exports\ExportKeuanganRt;
 use App\Models\Keuangan;
 use App\Models\KeuanganRT;
 use Illuminate\Support\Facades\Auth;
@@ -18,6 +19,10 @@ class LaporanKeuanganRTController extends Controller
         $authrt = Auth::user()->rt_id;
         $laporankeuangan = KeuanganRT::latest();
         $latestkeuangan = Keuangan::latest(); 
+        $role = Auth::user()->role;
+        if ($role != "3" && $role != "4"  && $role != "1") {
+            abort(403);
+        }
         
         if (request()->start_date || request()->end_date) {
             $start_date = Carbon::parse(request()->start_date)->toDateTimeString();
@@ -34,6 +39,23 @@ class LaporanKeuanganRTController extends Controller
             // 'active' => 'login'
         ]);
     }   
+    public function carilaporanrt(Request $request)
+    {
+        $laporankeuangan = KeuanganRT::latest();
+        $latestkeuangan = Keuangan::latest(); 
+        	// menangkap data pencarian
+            $cari = $request->searchlaporanrt;
+            // mengambil data dari table pegawai sesuai pencarian data
+        $keuanganrtsearch = DB::table('keuangan_rt')->where('nama_laporan','like',"%".$cari."%")->paginate();
+        $laporankeuangan =  $keuanganrtsearch;
+            // mengirim data pegawai ke view index
+        return view('home.keuangan_rw',[ 
+            'tittle' => 'Dashboard | Laporan Keuangan RW',
+            // 'active' => 'login'
+            'keuangans'=> $latestkeuangan->paginate(7),
+            'laporankeuangans' => $laporankeuangan,
+    ]);
+    }
 
     public function store(Request $request)
     {
@@ -49,7 +71,7 @@ class LaporanKeuanganRTController extends Controller
         $iuran->rt = $data['rt'];
         $iuran->ke = $data['ke'];
         $iuran->save();
-        return redirect('/laporan_keuangan_rt')->with('success', 'Iuran Baru Sudah Dibuat');
+        return redirect('/laporan_keuangan_rt')->with('success', 'Laporan Sudah Dibuat  ');
     }
 
     public function show($id)
@@ -79,7 +101,7 @@ class LaporanKeuanganRTController extends Controller
         $totalsumnominals = $sumnominalpemasukan1 -= $sumnominalpengeluaran;
         return view('laporanrt.index', [
             'id'=>$id,
-            'tittle' => 'Dashboard | Laporan Keuangan RW',
+            'tittle' => 'Dashboard | Laporan Keuangan RT',
             'laporans' => $latestkeuanganrt->get(),
             'totalsumnominal' => $totalsumnominals,
             'totalpemasukan' => $sumnominalpemasukan,
@@ -87,13 +109,13 @@ class LaporanKeuanganRTController extends Controller
             // 'active' => 'login'
         ]);
     }
-    public function exportKeuangan($id){
+    public function exportKeuanganRt($id){
         $waktu =  Carbon::now()->locale('id')->isoFormat('D MMMM Y');
-        return Excel::download(new ExportKeuangan($id), 'Laporan Keuangan Tanggal ' . $waktu . '.xlsx');
+        return Excel::download(new ExportKeuanganRt($id), 'Laporan Keuangan Tanggal ' . $waktu . '.xlsx');
     }
-    public function exportKeuanganPDF($id){
+    public function exportKeuanganRtPDF($id){
         $waktu =  Carbon::now()->locale('id')->isoFormat('D MMMM Y');
-        return Excel::download(new ExportKeuangan($id), 'Laporan Keuangan Tanggal ' . $waktu . '.pdf', \Maatwebsite\Excel\Excel::DOMPDF);
+        return Excel::download(new ExportKeuanganRt($id), 'Laporan Keuangan Tanggal ' . $waktu . '.pdf', \Maatwebsite\Excel\Excel::DOMPDF);
     }
     public function destroy($id)
     {

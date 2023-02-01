@@ -55,6 +55,8 @@ class ExportKeuangan implements FromView, ShouldAutoSize
             'tittle' => 'Dashboard | Laporan Keuangan RW',
             'laporans' => $latestkeuanganrw->get(),
             'totalsumnominal' => $totalsumnominals,
+            'totalpemasukan' => $sumnominalpemasukan,
+            'totalpengeluaran' => $sumnominalpengeluaran,
             // 'active' => 'login'
         ]);
     }

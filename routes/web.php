@@ -12,6 +12,7 @@ use App\Http\Controllers\SettingRtController;
 use App\Http\Controllers\StatistikController;
 use App\Http\Controllers\SettingRoleController;
 use App\Http\Controllers\IuranController;
+use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\KepalaKeluargaController;
 // use App\Http\Controllers\SettingRoleRtController;
 use App\Http\Controllers\UpdatePasswordController;
@@ -25,6 +26,10 @@ use App\Http\Controllers\LaporanPemasukanRtController;
 use App\Http\Controllers\LaporanPengeluaranRtController;
 use App\Http\Controllers\LaporanPengeluaranController;
 use App\Http\Controllers\SuratController;
+use App\Http\Controllers\SettingController;
+
+
+
 
 
 
@@ -72,10 +77,20 @@ Route::get('/editprofil', [ProfilController::class, 'editprofil']);
 Route::post('/profilktp', [ProfilController::class, 'uploadgambar']);
 Route::post('/profilkk', [ProfilController::class, 'uploadkk']);
 Route::get('/editprofil/{id}', [ProfilController::class, 'updateprofiluser']);
+Route::get('/updatewarga/{id}', [ProfilController::class, 'updateprofilwarga']);
+Route::get('/updatewargaasrw/{id}', [ProfilController::class, 'updateprofilwargaasrw']);
+
 Route::get('/showprofil/{id}', [ProfilController::class, 'show']);
+Route::get('/profilwarga/{id}', [ProfilController::class, 'profilwarga']);
+Route::get('/editprofilwarga/{id}', [ProfilController::class, 'editprofilwarga']);
 Route::post('/simpankeluarga', [AnggotaKeluargaController::class, 'simpankeluarga']);
 Route::delete('/deleteanggota/{id}', [AnggotaKeluargaController::class, 'destroy']);
 Route::post('/editprofil/{id}', [ProfilController::class, 'updateprofiluser']);
+Route::post('/updatewarga/{id}', [ProfilController::class, 'updateprofilwarga']);
+//asrw
+Route::post('/simpankeluargaasrw', [AnggotaKeluargaController::class, 'simpankeluargaasrw']);
+Route::delete('/deleteanggotaasrw/{id}', [AnggotaKeluargaController::class, 'destroyasrw']);
+Route::post('/updatewargaasrw/{id}', [ProfilController::class, 'updateprofilwargaasrw']);
 
 Route::resource('/setting-rt', RtController::class);
 Route::get('/setting-ketuarw', [SettingRoleController::class, 'index']);
@@ -106,6 +121,7 @@ Route::delete('/lihatsurat/{id}', [SuratController::class, 'destroy']);
 Route::get('/cetaksurat/{id}', [SuratController::class, 'exportpdf']);
 Route::get('/terbitkansurat/{id}', [SuratController::class, 'terbitsurat']);
 Route::post('/terbitkansurat/{id}', [SuratController::class, 'terbitsurat']);
+Route::get('/carisurat',[SuratController::class, 'searchsurat']);
 Route::get('/carisuratapproved',[SuratController::class, 'search']);
 
 
@@ -115,11 +131,17 @@ Route::get('/daftarwargaadmin', [DaftarWargaController::class, 'admins']);
 //Bendahara
 Route::get('/updatebendahara/{id}', [DaftarWargaController::class, 'updatebendahara']);
 Route::post('/updatebendahara/{id}', [DaftarWargaController::class, 'updatebendahara']);
+Route::get('/updatebendahararw/{id}', [DaftarWargaController::class, 'updatebendahararw']);
+Route::post('/updatebendahararw/{id}', [DaftarWargaController::class, 'updatebendahararw']);
 //Sekretaris
 Route::get('/updatesekretaris/{id}', [DaftarWargaController::class, 'updatesekretaris']);
 Route::post('/updatesekretaris/{id}', [DaftarWargaController::class, 'updatesekretaris']);
+Route::get('/updatesekretarisrw/{id}', [DaftarWargaController::class, 'updatesekretarisrw']);
+Route::post('/updatesekretarisrw/{id}', [DaftarWargaController::class, 'updatesekretarisrw']);
 Route::get('/jadikanwarga/{id}', [DaftarWargaController::class, 'reset']);
-
+Route::get('/jadikanwargarw/{id}', [DaftarWargaController::class, 'resetwargarw']);
+Route::delete('/deletewarga/{id}', [DaftarWargaController::class, 'destroy']);
+Route::delete('/deletewargarw/{id}', [DaftarWargaController::class, 'destroyasrw']);
 // AUTH ROUTE
 Route::get('/login', [LoginController::class, 'index']);
 Route::post('/login', [LoginController::class, 'authenticate']);
@@ -130,6 +152,7 @@ Route::post('/register', [RegisterController::class, 'store']);
 Route::get('/iuran', [IuranController::class, 'index']);
 Route::get('/bayariuran/{id}', [IuranController::class, 'membayariuran']);
 Route::get('/buatiuran', [IuranController::class, 'buatiuran']);
+Route::delete('/hapusiuran/{id}', [IuranController::class, 'destroy']);
 // Route::post('/bayarkan', [IuranController::class, 'bayar']);
 Route::post('/createiuran', [IuranController::class, 'createiuran']);
 Route::post('/bayariuran1/pembayaran/iuran', [IuranController::class, 'bayar']);
@@ -146,6 +169,8 @@ Route::get('/laporan_rw', [LaporanController::class, 'index']);
 Route::post('/simpan_keuangan_rw', [LaporanKeuanganRWController::class, 'store']);
 Route::get('/export-keuangan/{id}',[LaporanKeuanganRWController::class,'exportKeuangan'])->name('export-keuangan');
 Route::get('/export-keuangan-pdf/{id}',[LaporanKeuanganRWController::class,'exportKeuanganPDF'])->name('export-keuangan-pdf');
+Route::get('/export-keuanganrt/{id}',[LaporanKeuanganRTController::class,'exportKeuanganRt'])->name('export-keuanganrt');
+Route::get('/export-keuanganrt-pdf/{id}',[LaporanKeuanganRTController::class,'exportKeuanganRtPDF'])->name('export-keuanganrt-pdf');
 Route::get('/detail_keuangan_rw/{id}',[LaporanKeuanganRWController::class, 'show']);
 //RoutePengeluaran
 Route::get('/pengeluaran_rw', [LaporanPengeluaranController::class, 'index']);
@@ -153,4 +178,20 @@ Route::get('/export-pengeluaran',[LaporanPengeluaranController::class,'exportPen
 Route::get('/export-pengeluaran-pdf',[LaporanPengeluaranController::class,'exportPengeluaranPDF'])->name('export-pengeluaran-pdf');
 Route::post('/simpan_pengeluaran_rw', [LaporanPengeluaranController::class, 'pengeluaran']);
 
-
+Route::get('forget-password', [ForgotPasswordController::class, 'showForgetPasswordForm']);
+Route::post('forget-password-post', [ForgotPasswordController::class, 'submitForgetPasswordForm']); 
+Route::get('reset-password/{token}', [ForgotPasswordController::class, 'showResetPasswordForm'])->name('reset.password.get');
+Route::get('reset-password/{token}', [ForgotPasswordController::class, 'showResetPasswordForm'])->name('reset.password.get');
+// Route::get('/home/markNotifications', [HomeController::class, 'markNotification'])->name('user.markNotification');
+Route::post('/mark-as-read', [HomeController::class, 'markNotification'])->name('markNotification');
+Route::get('/carilaporan',[LaporanKeuanganRWController::class, 'carilaporan']);
+Route::get('/cariwarga',[DaftarWargaController::class, 'cariwarga']);
+Route::get('/cariwargarw',[DaftarWargaController::class, 'cariwargarw']);
+Route::get('/carilaporanrt',[LaporanKeuanganRTController::class, 'carilaporanrt']);
+Route::post('reset-password-submit', [ForgotPasswordController::class, 'submitResetPasswordForm']);
+//Setting Route
+Route::get('/setting', [SettingController::class, 'index']);
+Route::get('/updatetempat/{id}', [SettingController::class, 'updatetempat']);
+Route::post('/simpansetting', [SettingController::class, 'simpansetting']);
+Route::post('/updatetempat/{id}', [SettingController::class, 'updatetempat']);
+Route::get('/uploadlogo', [SettingController::class, 'uploadlogo']);

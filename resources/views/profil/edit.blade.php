@@ -101,6 +101,26 @@
                         @enderror
                 </div>
                 <div class="mb-3">
+                  <label for="tempat_lahir" class="form-label">Tempat Lahir</label>
+                  <input type="text" class="form-control @error('tempat_lahir') is-invalid @enderror " id="tempat_lahir" aria-describedby="emailHelp" name="tempat_lahir" placeholder="Contoh: DKI Jakarta" required autofocus 
+                    value="{{old('tempat_lahir', $profil->tempat_lahir)}}">
+                  @error('tempat_lahir')
+                        <div  class="invalid-feedback">
+                          {{$message}}.
+                        </div>
+                        @enderror
+                </div>
+                <div class="mb-3">
+                  <label for="kewarganegaraan" class="form-label">Kewarganegaraan</label>
+                  <input type="text" class="form-control @error('kewarganegaraan') is-invalid @enderror " id="kewarganegaraan" aria-describedby="emailHelp" name="kewarganegaraan" placeholder="Contoh: Indonesia" required autofocus 
+                    value="{{old('kewarganegaraan', $profil->kewarganegaraan)}}">
+                  @error('kewarganegaraan')
+                        <div  class="invalid-feedback">
+                          {{$message}}.
+                        </div>
+                        @enderror
+                </div>
+                <div class="mb-3">
                   <label for="agama" class="form-label">Agama</label>
                   <select class="form-select"  value="{{old('alamat',$profil->agama)}}" name="agama">
                       <option value="Islam">Islam</option>

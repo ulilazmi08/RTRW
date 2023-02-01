@@ -16,7 +16,8 @@
                 <div class="mb-3">
                     <label for="via" class="form-label">Metode Pembayaran</label>
                     <select id="via" class="form-select" name="via">
-                        <option value="Cash"selected>Cash</option>
+                      <option selected>--Pilih Metode Bayar--</option>
+                        <option value="Cash">Cash</option>
                         <option value="Transfer">Transfer</option>
                     </select>
                 </div>
@@ -33,7 +34,29 @@
                 <input type="hidden" id="nama_pembayar" name="nama_pembayar" value="{{$namauser}}">
                 <button type="submit" class="btn btn-primary">
                     Bayar
-                </button>                    
+                </button>  
+                
+                <script type="text/javascript">
+                  
+                  document.getElementById("via").oninput = function(){  
+                    var via = document.getElementById("via").value;
+
+                  
+                  var bukti = document.getElementById("bukti").value; 
+                  var result = via.localeCompare("Cash")
+                  //var enable = document.getElementById("bukti");
+                  //alert(result);
+                  if (result == 0) {
+                    document.getElementById("bukti").disabled=true;
+                  }
+                  if (result != 0) {
+                    document.getElementById("bukti").disabled=false;
+                  }
+                  
+                   }
+                 
+                
+                </script>                  
             </form>
         </div>
     </div>

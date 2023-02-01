@@ -15,6 +15,7 @@ class LaporanPemasukanRtController extends Controller
     public function index()
     {
         $authrt = Auth::user()->rt_id;
+        $role = Auth::user()->role;
         $nominal = DB::table('keuangan')->where('jenis', "Pemasukan")->where('rt_pembayar', $authrt)->pluck('nominal');
         $pengeluaran = DB::table('keuangan')->where('jenis', "Pemasukan")->where('rt_pembayar', $authrt)->paginate(7);
         $sumnominal = 0;
@@ -26,6 +27,10 @@ class LaporanPemasukanRtController extends Controller
         $username = Auth::user()->name;
         $userid = Auth::user()->id;
         $profil = DB::table('profil')->where('user_id', $userid)->pluck('rt_id')->first();  
+        if ($role != "3" && $role != "4"  && $role != "1") {
+            abort(403);
+        }
+        
         return view('pemasukanrt.index',[
             'tittle' => 'Dashboard | Laporan Pemasukan RT',
             'namauser' => $username,

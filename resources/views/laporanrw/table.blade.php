@@ -18,7 +18,7 @@
     <td>{{$laporan->nominal}}</td>
     <td>{{$laporan->via}}</td>
     <td>{{$laporan->jenis}}</td>
-    <td>{{$laporan->created_at}}</td>
+    <td>{{\Carbon\Carbon::parse($laporan->created_at)->format('d-m-Y')}}</td>
   </tr>
   @endforeach
 </table>

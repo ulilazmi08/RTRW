@@ -280,6 +280,7 @@
                           <option value="Akademisi">Akademisi</option>
                           <option value="Karyawan Swasta">Karwayan Swasta</option>
                           <option value="Wirausaha">Wirausaha</option>
+                          <option value="Belum Bekerja">Belum Bekerja</option>
                       </select>
                     </div>
                     <div class="mb-3">

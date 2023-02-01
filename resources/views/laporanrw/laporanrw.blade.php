@@ -3,6 +3,7 @@
 <div class="row">
   <div class="col-xl-4 col-lg-5">
     <div class="card text-white bg-primary mb-3" style="width: 18rem; margin">
+      
       <div class="card-body">
       <h5 class="card-title">Laporan Pemasukan Keuangan</h5>
       <br> <br>

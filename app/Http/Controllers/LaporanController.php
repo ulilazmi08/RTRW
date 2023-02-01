@@ -15,7 +15,11 @@ use Illuminate\Support\Facades\DB;
 class LaporanController extends Controller
 {
     public function index ()
-    {
+    {        
+        $role = Auth::user()->role;
+        if ($role != "2" && $role != "4"  && $role != "1"  && $role != "7") {
+            abort(403);
+        }
         return view('laporanrw.laporanrw', [
             'tittle' => 'Dashboard | Laporan Keuangan RW',
             
@@ -25,6 +29,11 @@ class LaporanController extends Controller
     }
     public function rtview ()
     {
+        $role = Auth::user()->role;
+
+        if ($role != "3" && $role != "4"  && $role != "1") {
+            abort(403);
+        }
         return view('laporanrt.laporanrt', [
             'tittle' => 'Dashboard | Keuangan RT',
             // 'active' => 'login'

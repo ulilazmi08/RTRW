@@ -49,6 +49,14 @@ class AppServiceProvider extends ServiceProvider
             return $user->role == 5;
 
         });
+        Gate::define('bendahararw', function (User $user){
+            return $user->role == 7;
+
+        });
+        Gate::define('sekretarisrw', function (User $user){
+            return $user->role == 8;
+
+        });
         Collection::macro('paginate', function($perPage, $total = null, $page = null, $pageName = 'page') {
             $page = $page ?: LengthAwarePaginator::resolveCurrentPage($pageName);
 

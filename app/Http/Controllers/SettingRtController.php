@@ -14,12 +14,7 @@ class SettingRtController extends Controller
     public function index()
     {
 
-        // role 1 = admin
-        // role 2 = ketua RW
-        // role 3 = ketua RT
-        // role 4 = sekretaris
-        // role 5 = bendahara 
-        // role 6 = warga
+    
         $id = Auth::user()->role;
         $role1 = DB::table('users')->where('role', 1)->get();
         $role2 = DB::table('users')->where('role', 2)->get();

@@ -3,6 +3,7 @@
 
 <div class="row">
     <div class="card">
+      
         <div class="card-header">
           Laporan Keuangan RW
         </div>
@@ -15,10 +16,10 @@
           </div>  
           <div class="row">
             <div class="col">
-              <a class="btn btn-primary" href="/export-keuangan/{{$id}}">Simpan Sebagai Excel</a>
+              <a class="btn btn-primary" href="/export-keuanganrt/{{$id}}">Simpan Sebagai Excel</a>
             </div>
             <div class="col">
-              <a class="btn btn-success" href="/export-keuangan-pdf/{{$id}}">Simpan Sebagai PDF</a>
+              <a class="btn btn-success" href="/export-keuanganrt-pdf/{{$id}}">Simpan Sebagai PDF</a>
             </div>
           </div>
           @include('laporanrw.table', $laporans)

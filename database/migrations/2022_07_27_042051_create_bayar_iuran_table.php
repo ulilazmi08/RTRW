@@ -18,6 +18,7 @@ class CreateBayarIuranTable extends Migration
             $table->string('id_iuran');
             $table->string('nama_pembayar');
             $table->string('nominal');
+            $table->string('rt_pembayar');
             $table->string('bukti')->nullable();
             $table->string('via');
             $table->string('status');

@@ -16,7 +16,7 @@
       <td>{{$laporan->rt_pembayar}}</td>
       <td>{{$laporan->nominal}}</td>
       <td>{{$laporan->via}}</td>
-      <td>{{$laporan->created_at}}</td>
+      <td>{{\Carbon\Carbon::parse($laporan->created_at)->format('d-m-Y')}}</td>
     </tr>
     @endforeach
     <tr class= "bg-primary text-white">
