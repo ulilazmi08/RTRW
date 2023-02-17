@@ -4,7 +4,7 @@
 <div class="row">
     <div class="card">
         <div class="card-header">
-          Iuran Bulanan
+          Setting RT
         </div>
         <div class="card-body">
           <div class="me-autod-inline-block">
@@ -32,7 +32,7 @@
                                         {{$message}}.
                                     </div>
                                     @enderror
-                            </div>
+                    </div>
                            
                     </div>
                     <div class="modal-footer">
@@ -49,33 +49,64 @@
                 <thead>
                   <tr>
                     <th scope="col">No</th>
-                    <th scope="col">Bulan</th>
-                    <th scope="col">Tahun</th>
-                    <th scope="col">Status</th>
-                    <th scope="col">Aksi</th>
+                    <td>RT</td>
+                    <td>Ketua RT</td>
+                    @if($role == 1)
+                    <td>Paraf RT</td>
+                    @endif
                   </tr>
                 </thead>
                 <tbody>
+                  @foreach ($rt as $rts)
                   <tr>
-                    <th scope="row">1</th>
-                    <td>Mark</td>
-                    <td>Otto</td>
-                    <td>@mdo</td>
-                    <td>Mark</td>
+                    <td> {{$loop->iteration}} </td>
+                    <td>{{$rts->nama_rt}}</td>
+                    <td>{{$rts->ketua_id}}</td>
+                    @if ($role == 1)
+                    <td>
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalParaf{{$rts->id}}">
+                            Paraf RT
+                      </button>
+                    </td> 
+                    @endif
+
+            <div class="modal fade" id="modalParaf{{$rts->id}}" data-bs-backdrop="static" tabindex="-1" aria-labelledby="modalParaf{{$rts->id}}" aria-hidden="true">
+              <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="modalParaf{{$rts->id}}">Upload Paraf</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <form method="POST" action="/uploadparaf/{{$rts->id}}" enctype="multipart/form-data">
+                        @csrf
+                        <div class="mb-3">
+                          <label for="image_paraf" class="form-label"></label>
+                          @if ($rts->paraf_rt)
+                          <img src = "{{asset('public/Parafrt/'. $rts->paraf_rt)}}"class="img-previewparaf img-fluid">
+                          @else
+                          <img class="img-previewparaf img-fluid">
+                          @endif
+                          <input type="file" id="image_paraf" class="form-control mt-4" required name="image" onchange="previewImage()">
+                          <input type="hidden" name="oldParaf" id="oldParaf" value="{{$rts->paraf_rt}}">
+                          {{-- <input required name="image" class="form-control" type="file" id="image_paraf" name="image_paraf"> --}}
+                        </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                      Close
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                      Simpan
+                  </button>                    
+                </div>
+                    </form>
+                </div>
+              </div>
+            </div>
                   </tr>
-                  <tr>
-                    <th scope="row">2</th>
-                    <td>Jacob</td>
-                    <td>Thornton</td>
-                    <td>Mark</td>
-                    <td>Mark</td>
-                  </tr>
-                  <tr>
-                    <th scope="row">3</th>
-                    <td colspan="2">Larry the Bird</td>
-                    <td>Mark</td>
-                    <td>Mark</td>
-                  </tr>
+                  @endforeach
+
                 </tbody>
               </table>
 
@@ -83,6 +114,22 @@
       </div>
 
 </div>
+<script>
+  function previewImage() 
+  {
+  const image = document.querySelector('#image_paraf');
+  const imgPreview = document.querySelector('.img-previewparaf');
+
+  imgPreview.style.display = 'block';
+
+  const oFReader = new FileReader ();
+  oFReader.readAsDataURL(image.files[0]);
+    oFReader.onload = function (oFREvent) 
+    {
+      imgPreview.src = oFREvent.target.result;
+    }
+  }
+</script>
 
 @endsection
     

@@ -16,6 +16,13 @@
 <div class="row mt-4">
   <div class="col md-4">
       <div class="card">
+        @if(session()->has('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+          {{session('success')}}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        @endif
+        
           <div class="card-header">
             Laporan Keuangan RW
           </div>
@@ -30,7 +37,7 @@
               <div class="modal-dialog">
                 <div class="modal-content">
                   <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Buat Laporan RW</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                   </div>
                   <div class="modal-body">
@@ -65,8 +72,12 @@
 
             <div class="me-autod-inline-block">
               <div class="input-group mb-3">
-                <span class="input-group-text"  id="basic-addon1">Search</span>
-                <input style="width: 50px" type="text" class="form-control" placeholder="Cari . . ." aria-label="Username" aria-describedby="basic-addon1">
+                <form action="/carilaporan" method="GET">
+                  <div class="input-group mb-2">
+                    <input type="text" class="form-control" placeholder="Cari Laporan" name="searchlaporan" value="{{request('searchlaporan')}}">
+                    <button class="btn bg-primary text-white" type="submit"  value="searchlaporan">Cari</button>
+                  </div>                
+                </form>
               </div>
             </div>
             </div>
@@ -90,7 +101,7 @@
                   <td>{{\Carbon\Carbon::parse($laporankeuangan->ke)->format('j F, Y')}}</td>
                   <td>
                     <a href="/detail_keuangan_rw/{{$laporankeuangan->id}}">
-                      <button class="btn-primary">
+                      <button class=" d-inline btn-primary">
                         Detail
                       </button>
                     </a>
@@ -107,31 +118,6 @@
               {{$laporankeuangans->links()}}
             </table>
             <br>
-            {{-- <table class="table table-hover">
-              <thead>
-                <tr>
-                  <th scope="col">No</th>
-                  <th scope="col">Nama</th>
-                  <th scope="col">RT</th>
-                  <th scope="col">Nominal</th>
-                  <th scope="col">Via</th>
-                  <th scope="col">Jenis</th>
-                  <th scope="col">Tanggal</th>
-                </tr>
-              </thead>
-              @foreach ($keuangans as $keuangan)
-              <tr>
-                <th scope="row">{{$loop->iteration}}</th>
-                <td>{{$keuangan->nama_pembayar}}</td>
-                <td>{{$keuangan->rt_pembayar}}</td>
-                <td>{{$keuangan->nominal}}</td>
-                <td>{{$keuangan->via}}</td>
-                <td>{{$keuangan->jenis}}</td>
-                <td>{{$keuangan->created_at}}</td>
-              </tr>
-              @endforeach
-            </table>
-            {{$keuangans->links()}} --}}
           </div>
         </div>
 

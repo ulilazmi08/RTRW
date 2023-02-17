@@ -13,7 +13,7 @@ class StatusPengajuanController extends Controller
     public function index()
     {   
         $username = Auth::user()->name;
-        $suratuser = DB::table('surat')->where('nama_pengirim', $username)->paginate(7);
+        $suratuser = DB::table('surat')->where('nama_pengirim', $username)->paginate(3);
         return view('home.status_pengajuan', [
             'tittle' => 'Dashboard | Status Pengajuan',
             'suratusers' => $suratuser,

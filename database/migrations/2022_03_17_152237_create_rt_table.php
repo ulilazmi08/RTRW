@@ -16,7 +16,7 @@ class CreateRtTable extends Migration
         Schema::create('rt', function (Blueprint $table) {
             $table->id();
             $table->string('nama_rt')->nullable();
-            $table->string('ketua_rt')->nullable();
+            $table->string('paraf_rt')->nullable();
             $table->string('ketua_id')->nullable();
             $table->timestamps();
         });

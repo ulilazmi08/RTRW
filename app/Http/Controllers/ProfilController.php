@@ -28,13 +28,12 @@ class ProfilController extends Controller
         $user = DB::table('users')->where('id', $id)->get();
         $profil = DB::table('profil')->where('user_id', $id)->get();
         return view('profil.index', [
-            'tittle' => 'Profil',
+            'tittle' => 'Dashboard | Profil',
             'users' => $user,
             'profils' => $profil
             // 'active' => 'login'
         ]);
     }
-
     /**
      * Show the form for creating a new resource.
      *
@@ -45,13 +44,12 @@ class ProfilController extends Controller
         $countid = count($id) + 1;  
         $rt = DB::table('rt')->get();
         return view('profil.create', [
-            'tittle' => 'Buat Profil',
+            'tittle' => 'Sistem Administrasi | Tambah Warga',
             'rt' => $rt,
             'no_keluargas' => $countid,
             // 'active' => 'login'
         ]);
     }
-
     /**
      * Store a newly created resource in storage.
      *
@@ -68,6 +66,8 @@ class ProfilController extends Controller
             'password' => 'required|min:6|max:255',
             'gender' => 'required|max:255',
             'alamat' => 'required|max:255',
+            'alamat_asal' => 'required|max:255',
+            'tempat_lahir' => 'required|max:255',
             'status' => 'required|max:255',
             'nama_rt' => 'required|max:255',
             'tgl_lahir' => 'required',
@@ -76,7 +76,8 @@ class ProfilController extends Controller
             'agama' => 'required|max:255',
             'pekerjaan' => 'required|max:255',
             'no_kontak' => 'required|max:255',
-            'no_rumah' => 'required|max:2'
+            'no_rumah' => 'required|max:4',
+            'no_rumah_asal' => 'required|max:4',
         ]);
 
         $data = $request->all();
@@ -95,8 +96,11 @@ class ProfilController extends Controller
         $profil->user_id = $user->id;
         $profil->rt_id = $data['nama_rt'];
         $profil->alamat = $data['alamat'];
+        $profil->alamat_asal = $data['alamat_asal'];
         $profil->status = $data['status'];
+        $profil->tempat_lahir = $data['tempat_lahir'];
         $profil->peran_keluarga = $data['peran_keluarga'];
+        $profil->kewarganegaraan = $data['kewarganegaraan'];
         $profil->no_relasi_sebelum = $user->id;
         $profil->no_relasi_sesudah = $user->id;
         // $profil->image_ktp = $data['image_ktp'];
@@ -107,6 +111,7 @@ class ProfilController extends Controller
         $profil->pekerjaan = $data['pekerjaan'];
         $profil->no_kontak = $data['no_kontak'];
         $profil->no_rumah = $data['no_rumah'];
+        $profil->no_rumah_asal = $data['no_rumah_asal'];
         $profil->save();
         return redirect('/home')->with('success', 'Profil Sudah Dibuat');
     }
@@ -159,7 +164,7 @@ class ProfilController extends Controller
             $profil->image_kk = $filename;
             $profil->save();
         }
-        return redirect('/profil')->with('success', 'Ktp Sudah Diupload');
+        return redirect('/profil')->with('success', 'KK Sudah Diupload');
     }
     /**
      * Show the form for editing the specified resource.
@@ -175,6 +180,22 @@ class ProfilController extends Controller
         $rt = DB::table('rt')->get();
         return view('profil.edit', [
             'tittle' => 'Edit Profil',
+            'users' => $user,
+            'profils' => $profil,
+            'rt' => $rt
+            // 'active' => 'login'
+        ]);
+    }
+    public function editprofilwarga($id)
+    {
+        $idwarga = Auth::user()->role;
+        $userrole = DB::table('users')->where('role', $idwarga)->pluck('role')->first();
+        $user = DB::table('users')->where('id', $id)->get();
+        $profil = DB::table('profil')->where('user_id', $id)->get();
+        $rt = DB::table('rt')->get();
+        return view('profil.editwarga', [
+            'tittle' => 'Edit Profil',
+            'userrole'=> $userrole,
             'users' => $user,
             'profils' => $profil,
             'rt' => $rt
@@ -197,6 +218,30 @@ class ProfilController extends Controller
             'rt' => $rt,
             'nokeluarga' => $nokeluarga,
             'anggotakeluargas' => $anggotakeluarga,
+            // 'active' => 'login'
+        ]);
+    }
+    public function profilwarga($id)
+    {
+        $idwarga = Auth::user()->role;
+        $userrole = DB::table('users')->where('role', $idwarga)->pluck('role')->first();
+        $idwarga = DB::table('users')->where('id', $id)->pluck('id')->first();
+        $user = DB::table('users')->where('id', $id)->get();
+        $keluargauser = DB::table('users')->where('id', $id)->pluck('no_keluarga');
+        $nokeluarga = DB::table('users')->where('id', $id)->pluck('no_keluarga')->first();
+        $profil = DB::table('profil')->where('user_id', $id)->get();
+        $rt = DB::table('rt')->get();
+        $anggotakeluarga = DB::table('anggota_keluarga')->where('no_keluarga', $keluargauser)->get();
+        $anggota = DB::table('rt')->get();
+        return view('profil.warga', [
+            'tittle' => 'Profil User',
+            'users' => $user,
+            'userrole'=> $userrole,
+            'profils' => $profil,
+            'rt' => $rt,
+            'nokeluarga' => $nokeluarga,
+            'anggotakeluargas' => $anggotakeluarga,
+            'idwarga'=> $idwarga,
             // 'active' => 'login'
         ]);
     }
@@ -231,7 +276,7 @@ class ProfilController extends Controller
         $user->tgl_lahir = $data['tgl_lahir'];
         $user->hubungan = $data['hubungan'];
         $user->gender = $data['gender'];
-        $user->rt = $data['nama_rt'];
+        $user->rt_id = $data['nama_rt'];
         $user->pendidikan = $data['pendidikan'];
         $user->agama = $data['agama'];
         $user->pekerjaan = $data['pekerjaan'];
@@ -239,11 +284,9 @@ class ProfilController extends Controller
         $user->no_kontak = $data['no_kontak'];
         $user->save();
         return redirect('/daftarwarga')->with('success');
-
-       
     }
-    
 
+   
     /**
      * Update the specified resource in storage.
      *
@@ -260,6 +303,7 @@ class ProfilController extends Controller
             'password' => 'required|min:6|max:255',
             'gender' => 'required|max:255',
             'alamat' => 'required|max:255',
+            'alamat_asal' => 'required|max:255',
             'status' => 'required|max:255',
             'nama_rt' => 'required|max:255',
             'tgl_lahir' => 'required',
@@ -268,7 +312,8 @@ class ProfilController extends Controller
             'agama' => 'required|max:255',
             'pekerjaan' => 'required|max:255',
             'no_kontak' => 'required|max:255',
-            'no_rumah' => 'required|max:2'
+            'no_rumah' => 'required|max:4',
+            'no_rumah_asal' => 'required|max:4',
         ]);
         $updateuser = User::find($id);
         $updateprofil = Profil::where('user_id', $id)->firstOrFail();
@@ -277,10 +322,63 @@ class ProfilController extends Controller
         $updateuser->email = $data['email'];
         $updateuser->password = Hash::make($data['password']);
         $updateuser->no_ktp = $data['no_ktp'];
+        $updateuser->rt_id = $data['nama_rt'];
         $updateprofil->rt_id = $data['nama_rt'];
         $updateprofil->alamat = $data['alamat'];
+        $updateprofil->alamat_asal = $data['alamat_asal'];
+        $updateprofil->kewarganegaraan = $data['kewarganegaraan'];
         $updateprofil->status = $data['status'];
         $updateprofil->peran_keluarga = $data['peran_keluarga'];
+        $updateprofil->gender = $data['gender'];
+        $updateprofil->tempat_lahir = $data['tempat_lahir'];
+        $updateprofil->tgl_lahir = $data['tgl_lahir'];
+        $updateprofil->pendidikan = $data['pendidikan'];
+        $updateprofil->agama = $data['agama'];
+        $updateprofil->pekerjaan = $data['pekerjaan'];
+        $updateprofil->no_kontak = $data['no_kontak'];
+        $updateprofil->no_rumah = $data['no_rumah'];
+        $updateprofil->no_rumah_asal = $data['no_rumah_asal'];
+        $updateuser->save();
+        $updateprofil->save();
+        return redirect('/profil')->with('success', 'Profil Sudah Diupdate');
+    }
+
+    public function updateprofilwarga(Request $request, $id)
+    {
+        $this->validate($request, [
+            'name' => 'required|max:255',
+            'no_ktp' => 'required|min:16',
+            'email' => 'required|email',
+            'password' => 'required|min:6|max:255',
+            'gender' => 'required|max:255',
+            'alamat' => 'required|max:255',
+            'alamat_asal' => 'required|max:255',
+            'status' => 'required|max:255',
+            'nama_rt' => 'required|max:255',
+            'tgl_lahir' => 'required',
+            'pendidikan' => 'required|max:255',
+            'agama' => 'required|max:255',
+            'pekerjaan' => 'required|max:255',
+            'no_kontak' => 'required|max:255',
+            'no_rumah' => 'required|max:4',
+            'no_rumah_asal' => 'required|max:4',
+
+        ]);
+        $updateuser = User::find($id);
+        $updateprofil = Profil::where('user_id', $id)->firstOrFail();
+        $data = $request->all();
+        $updateuser->name = $data['name'];
+        $updateuser->email = $data['email'];
+        $updateuser->password = Hash::make($data['password']);
+        $updateuser->no_ktp = $data['no_ktp'];
+        $updateuser->rt_id = $data['nama_rt'];
+        $updateprofil->rt_id = $data['nama_rt'];
+        $updateprofil->alamat = $data['alamat'];
+        $updateprofil->alamat = $data['alamat_asal'];
+        $updateprofil->tempat_lahir = $data['tempat_lahir'];
+        $updateprofil->status = $data['status'];
+        $updateprofil->peran_keluarga = $data['peran_keluarga'];
+        $updateprofil->kewarganegaraan = $data['kewarganegaraan'];
         $updateprofil->gender = $data['gender'];
         $updateprofil->tgl_lahir = $data['tgl_lahir'];
         $updateprofil->pendidikan = $data['pendidikan'];
@@ -290,7 +388,56 @@ class ProfilController extends Controller
         $updateprofil->no_rumah = $data['no_rumah'];
         $updateuser->save();
         $updateprofil->save();
-        return redirect('/profil')->with('success', 'Profil Sudah Diupdate');
+        return redirect('/daftarwarga')->with('success', 'Profil Sudah Diupdate');
+    }
+
+    public function updateprofilwargaasrw(Request $request, $id)
+    {
+        $this->validate($request, [
+            'name' => 'required|max:255',
+            'no_ktp' => 'required|min:16',
+            'email' => 'required|email',
+            'password' => 'required|min:6|max:255',
+            'gender' => 'required|max:255',
+            'alamat' => 'required|max:255',
+            'alamat_asal' => 'required|max:255',
+            'status' => 'required|max:255',
+            'nama_rt' => 'required|max:255',
+            'tgl_lahir' => 'required',
+            // 'nama_rt' => 'required',
+            'pendidikan' => 'required|max:255',
+            'agama' => 'required|max:255',
+            'pekerjaan' => 'required|max:255',
+            'no_kontak' => 'required|max:255',
+            'no_rumah' => 'required|max:4',
+            'no_rumah_asal' => 'required|max:4'
+        ]);
+        $updateuser = User::find($id);
+        $updateprofil = Profil::where('user_id', $id)->firstOrFail();
+        $data = $request->all();
+        $updateuser->name = $data['name'];
+        $updateuser->email = $data['email'];
+        $updateuser->password = Hash::make($data['password']);
+        $updateuser->no_ktp = $data['no_ktp'];
+        $updateuser->rt_id = $data['nama_rt'];
+        $updateprofil->rt_id = $data['nama_rt'];
+        $updateprofil->alamat = $data['alamat'];
+        $updateprofil->alamat_asal = $data['alamat_asal'];
+        $updateprofil->tempat_lahir = $data['tempat_lahir'];
+        $updateprofil->status = $data['status'];
+        $updateprofil->peran_keluarga = $data['peran_keluarga'];
+        $updateprofil->kewarganegaraan = $data['kewarganegaraan'];
+        $updateprofil->gender = $data['gender'];
+        $updateprofil->tgl_lahir = $data['tgl_lahir'];
+        $updateprofil->pendidikan = $data['pendidikan'];
+        $updateprofil->agama = $data['agama'];
+        $updateprofil->pekerjaan = $data['pekerjaan'];
+        $updateprofil->no_kontak = $data['no_kontak'];
+        $updateprofil->no_rumah = $data['no_rumah'];
+        $updateprofil->no_rumah_asal = $data['no_rumah_asal'];
+        $updateuser->save();
+        $updateprofil->save();
+        return redirect('/daftarwargaadmin')->with('success', 'Profil Sudah Diupdate');
     }
 
     /**

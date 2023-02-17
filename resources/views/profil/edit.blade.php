@@ -46,31 +46,27 @@
                   <select id="status" class="form-select" name="status">
                       <option value="Belum Menikah" >Belum Menikah</option>
                       <option value="Sudah Menikah"selected>Sudah Menikah</option>
+                      <option value="Cerai Hidup" >Cerai Hidup</option>
+                      <option value="Cerai Mati" >Cerai Mati</option>
                   </select>
                 </div>
-                  <div class="mb-3">
+
+                <div class="mb-3">
+                  <label for="gender" class="form-label">Jenis Kelamin</label>
+                  <select class="form-select" name="gender">
+                      <option value="Laki Laki" selected>Laki Laki</option>
+                      <option value="Perempuan">Perempuan</option>
+                  </select>
+                </div>
+
+                <div class="mb-3">
                   <label for="peran_keluarga" class="form-label">Peran Keluarga</label>
                   <select id="peran_keluarga" class="form-select" name="peran_keluarga"  >
                       <option value="Suami" selected>Suami</option>
                       <option value="Istri">Istri</option>
+                      <option value="Kepala Keluarga">Kepala Keluarga</option>
                   </select>
                 </div>
-
-                <script type="text/javascript">
-                  document.getElementById("status").oninput = function(){  
-                  var status = document.getElementById("status").value;
-                  var peran_keluarga = document.getElementById("peran_keluarga").value; 
-                  var result = status.localeCompare("Belum Menikah")
-                  //var enable = document.getElementById("peran_keluarga");
-                  //alert(result);
-                  if (result == 0) {
-                    document.getElementById("peran_keluarga").disabled=true;
-                  }
-                  if (result != 0) {
-                    document.getElementById("peran_keluarga").disabled=false;
-                  }
-                   }
-                </script>
                 <div class="mb-3">
                   <label for="nama_rt" class="form-label">RT</label>
                   <select class="form-select" name="nama_rt">
@@ -93,7 +89,7 @@
                
                 <div class="mb-3">
                   <label for="tgl_lahir" class="form-label">Tanggal Lahir</label>
-                  <input type="date" class="form-control @error('tgl_lahir',$profil->tgl_lahir) is-invalid @enderror " id="tgl_lahir" aria-describedby="emailHelp" name="tgl_lahir" placeholder="Tanggal Lahir" required autofocus value="{{old('tgl_lahir')}}">
+                  <input type="date" class="form-control @error('tgl_lahir',$profil->tgl_lahir) is-invalid @enderror " id="tgl_lahir" aria-describedby="emailHelp" name="tgl_lahir" placeholder="Tanggal Lahir" required autofocus value="{{old('tgl_lahir', $profil->tgl_lahir)}}">
                   @error('tgl_lahir')
                         <div  class="invalid-feedback">
                           {{$message}}.
@@ -101,8 +97,28 @@
                         @enderror
                 </div>
                 <div class="mb-3">
+                  <label for="tempat_lahir" class="form-label">Tempat Lahir</label>
+                  <input type="text" class="form-control @error('tempat_lahir') is-invalid @enderror " id="tempat_lahir" aria-describedby="emailHelp" name="tempat_lahir" placeholder="Contoh: DKI Jakarta" required autofocus 
+                    value="{{old('tempat_lahir', $profil->tempat_lahir)}}">
+                  @error('tempat_lahir')
+                        <div  class="invalid-feedback">
+                          {{$message}}.
+                        </div>
+                        @enderror
+                </div>
+                <div class="mb-3">
+                  <label for="kewarganegaraan" class="form-label">Kewarganegaraan</label>
+                  <input type="text" class="form-control @error('kewarganegaraan') is-invalid @enderror " id="kewarganegaraan" aria-describedby="emailHelp" name="kewarganegaraan" placeholder="Contoh: Indonesia" required autofocus 
+                    value="{{old('kewarganegaraan', $profil->kewarganegaraan)}}">
+                  @error('kewarganegaraan')
+                        <div  class="invalid-feedback">
+                          {{$message}}.
+                        </div>
+                        @enderror
+                </div>
+                <div class="mb-3">
                   <label for="agama" class="form-label">Agama</label>
-                  <select class="form-select"  value="{{old('alamat',$profil->agama)}}" name="agama">
+                  <select class="form-select"  value="{{old('agama',$profil->agama)}}" name="agama">
                       <option value="Islam">Islam</option>
                       <option value="Hindu">Hindu</option>
                       <option value="Budha">Budha</option>
@@ -121,6 +137,15 @@
                         </div>
                         @enderror
                 </div>
+                 <div class="mb-3">
+                  <label for="alamat_asal" class="form-label">Alamat Asal</label>
+                  <input type="text" class="form-control @error('alamat_asal') is-invalid @enderror " id="alamat_asal" aria-describedby="emailHelp" name="alamat_asal" placeholder="Contoh : Jalan Rawatengah" required autofocus value="{{old('alamat_asal',$profil->alamat_asal)}}">
+                  @error('alamat_asal')
+                        <div  class="invalid-feedback">
+                          {{$message}}.
+                        </div>
+                        @enderror
+                </div>
 
                 <div class="mb-3">
                   <label for="no_rumah" class="form-label">Nomor Rumah</label>
@@ -130,6 +155,15 @@
                           {{$message}}.
                         </div>
                         @enderror
+                </div>
+                 <div class="mb-3">
+                    <label for="no_rumah_asal" class="form-label">Nomor Rumah Asal</label>
+                    <input type="text" class="form-control @error('no_rumah_asal') is-invalid @enderror " id="no_rumah_asal" aria-describedby="emailHelp" name="no_rumah_asal" placeholder="Nomor Rumah Asal" required autofocus value="{{old('no_rumah_asal',$profil->no_rumah_asal)}}">
+                    @error('no_rumah_asal')
+                          <div  class="invalid-feedback">
+                            {{$message}}.
+                          </div>
+                          @enderror
                 </div>
                 <div class="mb-3">
                   <label for="no_kontak" class="form-label">Nomor Kontak</label>

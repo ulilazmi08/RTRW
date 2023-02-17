@@ -23,6 +23,9 @@ class CreateProfilTable extends Migration
             $table->string('image_ktp')->nullable();
             $table->string('image_kk')->nullable();
             $table->string('alamat');
+            $table->string('alamat_asal');
+            $table->string('tempat_lahir');
+            $table->string('kewarganegaraan');
             $table->date('tgl_lahir');
             $table->string('status');
             $table->string('peran_keluarga')->nullable();
@@ -30,6 +33,7 @@ class CreateProfilTable extends Migration
             $table->string('agama');
             $table->string('pekerjaan');
             $table->string('no_rumah');
+            $table->string('no_rumah_asal');
             $table->string('no_kontak');
             $table->timestamps();
         });

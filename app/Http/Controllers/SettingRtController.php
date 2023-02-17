@@ -8,18 +8,15 @@ use App\Models\SettingRole;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Image;
+
 
 class SettingRtController extends Controller
 {
     public function index()
     {
 
-        // role 1 = admin
-        // role 2 = ketua RW
-        // role 3 = ketua RT
-        // role 4 = sekretaris
-        // role 5 = bendahara 
-        // role 6 = warga
+    
         $id = Auth::user()->role;
         $role1 = DB::table('users')->where('role', 1)->get();
         $role2 = DB::table('users')->where('role', 2)->get();
@@ -77,6 +74,7 @@ class SettingRtController extends Controller
         //kalau yang lagi login == 1, bisa ubah role menjadi 2
         return redirect('/setting-ketuart');
     }
+
 
     public function resetketua($id, $rt_id)
     {

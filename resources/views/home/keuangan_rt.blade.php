@@ -16,6 +16,12 @@
 <div class="row mt-4">
   <div class="col md-4">
       <div class="card">
+        @if(session()->has('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+          {{session('success')}}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        @endif
           <div class="card-header">
             Laporan Keuangan RT
           </div>
@@ -30,7 +36,7 @@
               <div class="modal-dialog">
                 <div class="modal-content">
                   <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Buat Laporan</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                   </div>
                   <div class="modal-body">
@@ -66,8 +72,12 @@
 
             <div class="me-autod-inline-block">
               <div class="input-group mb-3">
-                <span class="input-group-text"  id="basic-addon1">Search</span>
-                <input style="width: 50px" type="text" class="form-control" placeholder="Cari . . ." aria-label="Username" aria-describedby="basic-addon1">
+                <form action="/carilaporanrt" method="GET">
+                  <div class="input-group mb-2">
+                    <input type="text" class="form-control" placeholder="Cari Laporan" name="searchlaporanrt" value="{{request('searchlaporanrt')}}">
+                    <button class="btn bg-primary text-white" type="submit"  value="searchlaporanrt">Cari</button>
+                  </div>                
+                </form>
               </div>
             </div>
             </div>

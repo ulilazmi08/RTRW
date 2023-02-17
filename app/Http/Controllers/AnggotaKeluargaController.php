@@ -19,7 +19,7 @@ class AnggotaKeluargaController extends Controller
     {
         $request->validate([
             'name' => 'required|max:255|unique:anggota_keluarga',
-            'email' => 'required|min:6|max:255',
+            'email' => 'min:6|max:255',
             'no_identitas' => 'required|max:16',
             'gender' => 'required|max:255', 
             'tgl_lahir' => 'required|max:255',
@@ -55,9 +55,56 @@ class AnggotaKeluargaController extends Controller
         $user->save();
         return redirect('/daftarwarga')->with('success');
     }
+
+    public function simpankeluargaasrw(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|max:255|unique:anggota_keluarga',
+            'email' => 'min:6|max:255',
+            'no_identitas' => 'required|max:16',
+            'gender' => 'required|max:255', 
+            'tgl_lahir' => 'required|max:255',
+            'agama' => 'required|max:255',
+            'no_kontak' => 'required|max:255',
+            'pendidikan' => 'required|max:255',
+            'pekerjaan' => 'required|max:255',
+            'hubungan' => 'required|max:255',
+            'no_keluarga' => 'required|max:255',
+            // 'image' => 'required|max:255',
+            'alamat' => 'required|max:255',
+            'nama_rt' => 'required|max:8',
+            'no_rumah' => 'required|max:255',   
+        ]);
+
+        $data = $request->all();
+        $user = new AnggotaKeluarga;
+        $user->name = $data['name'];
+        $user->email = $data['email'];
+        $user->no_identitas = $data['no_identitas'];    
+        $user->no_keluarga = $data['no_keluarga'];
+        // $user->image = $data['image'];
+        $user->alamat = $data['alamat'];
+        $user->tgl_lahir = $data['tgl_lahir'];
+        $user->hubungan = $data['hubungan'];
+        $user->gender = $data['gender'];
+        $user->rt = $data['nama_rt'];
+        $user->pendidikan = $data['pendidikan'];
+        $user->agama = $data['agama'];
+        $user->pekerjaan = $data['pekerjaan'];
+        $user->no_rumah = $data['no_rumah'];
+        $user->no_kontak = $data['no_kontak'];
+        $user->save();
+        return redirect('/daftarwargaadmin')->with('success');
+    }
     public function destroy($id)
     {
         AnggotaKeluarga::destroy($id);
         return redirect('/daftarwarga')->with('success', 'Anggota Keluarga Sudah Dihapus');
+    }
+
+    public function destroyasrw($id)
+    {
+        AnggotaKeluarga::destroy($id);
+        return redirect('/daftarwargaadmin')->with('success', 'Anggota Keluarga Sudah Dihapus');
     }
 }

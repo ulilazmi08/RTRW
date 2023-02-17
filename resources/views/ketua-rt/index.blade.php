@@ -20,13 +20,7 @@
                     @if ($role == 1 || $role == 2)
                     @foreach ($rt as $rts)
                     @csrf
-                      {{-- @php
-                        $rubahrt = Illuminate\Support\Facades\DB::table('users')->where('role', 3)->get()
-                        // foreach ($rubahrt as rubah) {
-                        //   # code...
-                        // };
-                        // $definert = Illuminate\Support\Facades\DB::table('profil')->where('user_id', $rubahrt)->get();
-                      @endphp --}}
+                     
                       <tr>
                       <td>{{$loop->iteration}}</td>
                       <td>{{$rts->nama_rt}}</td>
@@ -51,7 +45,7 @@
                             <div class="modal-dialog modal-xl">
                               <div class="modal-content">
                                 <div class="modal-header">
-                                  <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                                  <h5 class="modal-title" id="exampleModalLabel">Pilih RT</h5>
                                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
@@ -65,17 +59,14 @@
                                             </thead>
                                             <tbody>
                                               @php
-                                              $warga = Illuminate\Support\Facades\DB::table('profil')->where('rt_id', $rts->nama_rt)->get();
+                                              $warga = Illuminate\Support\Facades\DB::table('users')->where('rt_id', $rts->nama_rt)->paginate(5);
                                               @endphp
                                                 @foreach ($warga as $wargas) 
-                                                  @php
-                                                  $nama = Illuminate\Support\Facades\DB::table('users')->where('id', $wargas->user_id)->pluck('name')->first();
-                                                  @endphp  
                                                 <tr>
                                                   <th scope="row">{{$loop->iteration}}</th>
-                                                  <td>{{$nama}}</td>
+                                                  <td>{{$wargas->name}}</td>
                                                   <td>
-                                                    <a href="/setting-ketuart/{{$wargas->user_id}}/{{$wargas->rt_id}}">
+                                                    <a href="/setting-ketuart/{{$wargas->id}}/{{$wargas->rt_id}}">
                                                       <button type="submit" class="btn btn-primary">
                                                         Jadikan RT
                                                     </button>
@@ -83,12 +74,16 @@
                                                   </td>
                                                 </tr>
                                                 @endforeach
+                                                {{$warga->links()}}
                                             </tbody>
                                       </table>
                                 </div>
                               </div>
                             </div>
                           </div>
+                      </td>
+                      <td>
+                       
                       </td>
                       @endforeach
                     @endif
@@ -98,9 +93,6 @@
             </table>
         </div>
       </div>
-
-    
-
 </div>
 
 @endsection

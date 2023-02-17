@@ -20,8 +20,8 @@ class ExportPengeluaran implements FromView, ShouldAutoSize
     use Exportable;  
     public function view():View 
     {
-        $pengeluaran = DB::table('keuangan')->where('jenis', "Pemasukan")->get();
-        $nominal = DB::table('keuangan')->where('jenis', "Pemasukan")->pluck('nominal');
+        $pengeluaran = DB::table('keuangan')->where('jenis', "Pengeluaran")->get();
+        $nominal = DB::table('keuangan')->where('jenis', "Pengeluaran")->pluck('nominal');
         $sumnominal = 0;
         $countnominal = count($nominal);
         for ($i=0; $i < $countnominal; $i++) { 
